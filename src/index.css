@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* Duolingo 风格色板 */
+  --color-duo: #58cc02;
+  --color-duo-dark: #46a302;
+  --color-duo-light: #89e219;
+  --color-duo-yellow: #ffc800;
+  --color-duo-yellow-dark: #e0a800;
+  --color-duo-red: #ff4b4b;
+  --color-duo-red-dark: #ea2b2b;
+  --color-duo-blue: #1cb0f6;
+  --color-duo-blue-dark: #1899d6;
+  --color-ink: #3c3c3c;
+  --color-ink-soft: #777777;
+  --color-paper: #f7f7f7;
+
+  --font-display: 'Nunito', ui-rounded, system-ui, sans-serif;
+
+  --shadow-btn: 0 4px 0 0 rgb(0 0 0 / 0.18);
+  --shadow-card: 0 2px 0 0 rgb(0 0 0 / 0.08);
+}
+
+html {
+  font-family: var(--font-display);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--color-ink);
+}
+
+/* 3D 按压按钮的通用行为（颜色由组件类给定） */
+@layer components {
+  .btn-3d {
+    @apply select-none rounded-2xl font-extrabold tracking-wide uppercase transition-none;
+    box-shadow: var(--shadow-btn);
+    transform: translateY(0);
+  }
+  .btn-3d:active {
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 0.18);
+    transform: translateY(4px);
+  }
+
+  .card-flat {
+    @apply rounded-2xl border-2 border-gray-200 bg-white;
+  }
+}
+
+/* 卡片翻转容器 */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Loading 弹跳点 */
+@keyframes dot-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.dot-bounce {
+  animation: dot-bounce 1.2s infinite ease-in-out;
+}
+.dot-bounce:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dot-bounce:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d7d7d7;
+  border-radius: 8px;
+}
+
+/* 隐藏滚动条（用于横向 chip 滚动条） */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
