@@ -122,10 +122,32 @@ pnpm lint      # oxlint 代码检查
 
 ## 📸 截图
 
-<!-- 把截图放到 docs/screenshots/ 并在下面替换成图片链接，例如：
-![首页](docs/screenshots/home.png)
-![复习](docs/screenshots/review.png)
--->
+<table>
+<tr>
+  <td><img src="public/screenshots/01-dashboard.png" alt="Dashboard" width="420"></td>
+  <td><img src="public/screenshots/02-words.png" alt="词库" width="420"></td>
+</tr>
+<tr>
+  <td align="center"><b>Dashboard</b><br>今日任务 · 阅读入口 · 4 项核心统计</td>
+  <td align="center"><b>词库</b><br>多语言单词本 · 响应式分页 · 筛选与标签</td>
+</tr>
+<tr>
+  <td><img src="public/screenshots/03-read.png" alt="阅读" width="420"></td>
+  <td><img src="public/screenshots/04-review.png" alt="复习" width="420"></td>
+</tr>
+<tr>
+  <td align="center"><b>阅读</b><br>AI 生成文章 · 选中生词一键入库 · 整篇朗读</td>
+  <td align="center"><b>复习</b><br>3D 翻转卡片 · 喇叭发音 · 三档反馈调度</td>
+</tr>
+<tr>
+  <td><img src="public/screenshots/05-settings.png" alt="设置" width="420"></td>
+  <td><img src="public/screenshots/06-add-word.png" alt="添加单词" width="420"></td>
+</tr>
+<tr>
+  <td align="center"><b>设置</b><br>界面语言 · AI 服务 · 数据导入/导出</td>
+  <td align="center"><b>添加单词</b><br>输入即自动补全 · 选择单词本 · 标签</td>
+</tr>
+</table>
 
 ## 📄 License
 
