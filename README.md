@@ -38,7 +38,7 @@
 ### 1. 克隆并安装依赖
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/ct188579/WordQuest.git
 cd word-learning
 pnpm install   # 或 npm install
 ```
