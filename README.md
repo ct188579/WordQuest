@@ -39,7 +39,7 @@
 
 ```bash
 git clone https://github.com/ct188579/WordQuest.git
-cd word-learning
+cd WordQuest-main
 pnpm install   # 或 npm install
 ```
 
