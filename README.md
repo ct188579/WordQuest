@@ -7,7 +7,7 @@
 输入一个单词，AI 自动补全音标、释义、例句、词根词缀；基于艾宾浩斯遗忘曲线的科学复习；还能让 AI 按主题写文章，选中生词一键收入词库。
 
 </div>
-🌐 **官方网站：** [wordquest.your-site.com](https://wordquest.your-site.com)
+🌐 **官方网站：** [https://word-quest-website.ctstudio.cloud](https://word-quest-website.ctstudio.cloud)
 
 ---
 
