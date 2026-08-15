@@ -17,6 +17,7 @@ export default {
   'nav.settings': '设置',
   'nav.addWord': '添加单词',
   'nav.read': '阅读',
+  'nav.favorites': '收藏本',
   'layout.dayStreak': '天连续打卡',
 
   // 登录
@@ -65,6 +66,24 @@ export default {
   'read.pause': '暂停',
   'read.resume': '继续',
   'read.stop': '停止',
+
+  // 收藏本
+  'fav.title': '收藏本',
+  'fav.all': '全部',
+  'fav.phrases': '短语',
+  'fav.sentences': '句子',
+  'fav.empty': '还没有收藏。点 + 收藏一条短语或句子吧！',
+  'fav.add': '添加收藏',
+  'fav.contentPh': '例如：hit the road',
+  'fav.translation': '翻译（可选）',
+  'fav.note': '备注（可选）',
+  'fav.save': '保存',
+  'fav.translating': 'AI 翻译中…',
+  'fav.deleteTitle': '删除这条收藏？',
+  'fav.deleteMsg': '此操作无法撤销。',
+  'fav.autoTranslate': '自动翻译',
+  'dash.favorites': '收藏的短语与句子',
+  'detail.saveSentence': '收藏此句',
 
   // 词库
   'words.title': '我的词库',

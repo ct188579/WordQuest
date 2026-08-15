@@ -17,6 +17,7 @@ export default {
   'nav.settings': '設定',
   'nav.addWord': '単語を追加',
   'nav.read': '読書',
+  'nav.favorites': 'お気に入り',
   'layout.dayStreak': '日連続',
 
   // 登录
@@ -65,6 +66,24 @@ export default {
   'read.pause': '一時停止',
   'read.resume': '再開',
   'read.stop': '停止',
+
+  // 收藏本
+  'fav.title': 'お気に入り',
+  'fav.all': 'すべて',
+  'fav.phrases': 'フレーズ',
+  'fav.sentences': '文',
+  'fav.empty': 'お気に入りがまだありません。+ でフレーズや文を保存しましょう！',
+  'fav.add': 'お気に入りを追加',
+  'fav.contentPh': '例: hit the road',
+  'fav.translation': '翻訳（任意）',
+  'fav.note': 'メモ（任意）',
+  'fav.save': '保存',
+  'fav.translating': 'AI翻訳中…',
+  'fav.deleteTitle': 'このお気に入りを削除しますか？',
+  'fav.deleteMsg': '元に戻せません。',
+  'fav.autoTranslate': '自動翻訳',
+  'dash.favorites': '保存したフレーズと文',
+  'detail.saveSentence': 'この文を保存',
 
   // 词库
   'words.title': 'マイライブラリ',

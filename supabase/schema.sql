@@ -142,3 +142,29 @@ create policy "books: owner update" on public.books
   with check (auth.uid() = user_id and public.is_allowed_user());
 create policy "books: owner delete" on public.books
   for delete using (auth.uid() = user_id and public.is_allowed_user());
+
+-- ---------- 8. favorites: 收藏本（短语 / 句子） ----------
+create table if not exists public.favorites (
+  id              uuid primary key default gen_random_uuid(),
+  user_id         uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  kind            text not null check (kind in ('phrase', 'sentence')),  -- phrase 短语 / sentence 句子
+  content         text not null,                      -- 原文内容
+  translation     text,                               -- 翻译 / 释义（可选）
+  note            text,                               -- 备注（可选）
+  source_word_id  uuid references public.words(id) on delete set null,  -- 来源单词（可选）
+  created_at      timestamptz not null default now()
+);
+
+create index if not exists idx_favorites_user on public.favorites (user_id, kind, created_at desc);
+
+alter table public.favorites enable row level security;
+
+create policy "favorites: owner select" on public.favorites
+  for select using (auth.uid() = user_id and public.is_allowed_user());
+create policy "favorites: owner insert" on public.favorites
+  for insert with check (auth.uid() = user_id and public.is_allowed_user());
+create policy "favorites: owner update" on public.favorites
+  for update using (auth.uid() = user_id and public.is_allowed_user())
+  with check (auth.uid() = user_id and public.is_allowed_user());
+create policy "favorites: owner delete" on public.favorites
+  for delete using (auth.uid() = user_id and public.is_allowed_user());

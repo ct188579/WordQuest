@@ -299,4 +299,22 @@ Return JSON: {"title": "...", "content": "paragraph1\\n\\nparagraph2\\n\\n..."}`
   )
 }
 
+// ------------------------------------------------------------
+// 7. 翻译：检测原文语言并翻译成界面语言（用于收藏本自动翻译）
+// ------------------------------------------------------------
+export async function translateText(
+  text: string,
+  uiLang: string = getUILanguage(),
+): Promise<string> {
+  const ul = langName(uiLang)
+  return chatJSON<{ translation?: string }, string>(
+    JSON_ONLY,
+    `Detect the language of the text below, then translate it into ${ul}.
+Text: "${text}"
+Return JSON: {"translation": "only the translation, no explanation or quotation marks"}.`,
+    (p) => p.translation ?? '',
+    (p) => Boolean(p.translation),
+  )
+}
+
 export { AIError }

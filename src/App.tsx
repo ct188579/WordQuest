@@ -11,6 +11,7 @@ import WordDetail from './pages/WordDetail'
 import AddWord from './pages/AddWord'
 import Read from './pages/Read'
 import Review from './pages/Review'
+import Favorites from './pages/Favorites'
 import Settings from './pages/Settings'
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
             <Route path="/words/:id" element={<WordDetail />} />
             <Route path="/add" element={<AddWord />} />
             <Route path="/read" element={<Read />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/review" element={<Review />} />
             <Route path="/settings" element={<Settings />} />
           </Route>

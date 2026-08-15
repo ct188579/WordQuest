@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Flame, Target, CheckCircle2, Trophy, Layers, BookOpenText, ChevronRight } from 'lucide-react'
+import { Flame, Target, CheckCircle2, Trophy, Layers, BookOpenText, Star, ChevronRight } from 'lucide-react'
 import gsap from 'gsap'
 import dayjs from 'dayjs'
 import { fetchDashboardStats } from '../services/words'
@@ -101,6 +101,22 @@ export default function Dashboard() {
             {t('dash.readCta')} <ChevronRight size={14} />
           </span>
         </div>
+      </Link>
+
+      {/* 收藏本入口 */}
+      <Link to="/favorites">
+        <Card className="flex items-center justify-between transition-colors hover:border-duo-yellow">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-duo-yellow/15">
+              <Star size={22} className="text-duo-yellow-dark" fill="currentColor" />
+            </span>
+            <div>
+              <p className="font-extrabold text-ink">{t('nav.favorites')}</p>
+              <p className="text-xs font-bold text-ink-soft">{t('dash.favorites')}</p>
+            </div>
+          </div>
+          <ChevronRight size={18} className="text-gray-300" />
+        </Card>
       </Link>
 
       {/* 统计网格 */}

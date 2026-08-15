@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Home, Layers, Plus, BookOpen, BookOpenText, Settings as SettingsIcon, Flame } from 'lucide-react'
+import { Home, Layers, Plus, BookOpen, BookOpenText, Settings as SettingsIcon, Flame, Star } from 'lucide-react'
 import gsap from 'gsap'
 import { cn } from '../lib/utils'
 import { useAuth } from '../stores/auth'
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/', icon: Home, labelKey: 'nav.home', end: true },
   { to: '/words', icon: BookOpen, labelKey: 'nav.words' },
   { to: '/read', icon: BookOpenText, labelKey: 'nav.read' },
+  { to: '/favorites', icon: Star, labelKey: 'nav.favorites' },
   { to: '/review', icon: Layers, labelKey: 'nav.review' },
   { to: '/settings', icon: SettingsIcon, labelKey: 'nav.settings' },
 ]
@@ -119,7 +120,7 @@ export function Layout() {
           {[
             ...NAV_ITEMS.slice(0, 2), // Home / Words
             { to: '/add', labelKey: 'nav.add', big: true },
-            ...NAV_ITEMS.slice(3), // Review / Settings（Read 通过首页横幅进入）
+            ...NAV_ITEMS.slice(4), // Review / Settings（Read 和 Favorites 通过首页卡片进入）
           ].map(({ to, icon: Icon, labelKey, big, end }: any) => (
             <NavLink
               key={to}

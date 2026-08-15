@@ -16,6 +16,30 @@ export interface Book {
   created_at: string
 }
 
+/** 收藏类型：短语 / 句子 */
+export type FavoriteKind = 'phrase' | 'sentence'
+
+/** favorites 表行结构：收藏本 */
+export interface Favorite {
+  id: string
+  user_id: string
+  kind: FavoriteKind
+  content: string
+  translation: string | null
+  note: string | null
+  source_word_id: string | null
+  created_at: string
+}
+
+/** 新增收藏时的可写字段 */
+export interface FavoriteInsert {
+  kind: FavoriteKind
+  content: string
+  translation?: string | null
+  note?: string | null
+  source_word_id?: string | null
+}
+
 /** words 表行结构 */
 export interface Word {
   id: string

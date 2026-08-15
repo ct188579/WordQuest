@@ -17,6 +17,7 @@ export default {
   'nav.settings': '설정',
   'nav.addWord': '단어 추가',
   'nav.read': '읽기',
+  'nav.favorites': '즐겨찾기',
   'layout.dayStreak': '일 연속',
 
   // 登录
@@ -65,6 +66,24 @@ export default {
   'read.pause': '일시정지',
   'read.resume': '계속',
   'read.stop': '정지',
+
+  // 收藏本
+  'fav.title': '즐겨찾기',
+  'fav.all': '전체',
+  'fav.phrases': '구절',
+  'fav.sentences': '문장',
+  'fav.empty': '아직 즐겨찾기가 없어요. +를 눌러 구절이나 문장을 저장하세요!',
+  'fav.add': '즐겨찾기 추가',
+  'fav.contentPh': '예: hit the road',
+  'fav.translation': '번역 (선택)',
+  'fav.note': '메모 (선택)',
+  'fav.save': '저장',
+  'fav.translating': 'AI 번역 중…',
+  'fav.deleteTitle': '이 즐겨찾기를 삭제할까요?',
+  'fav.deleteMsg': '되돌릴 수 없습니다.',
+  'fav.autoTranslate': '자동 번역',
+  'dash.favorites': '저장한 구절과 문장',
+  'detail.saveSentence': '이 문장 저장',
 
   // 词库
   'words.title': '내 단어장',

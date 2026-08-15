@@ -11,11 +11,13 @@ import {
   FileText,
   Plus,
   X,
+  Star,
 } from 'lucide-react'
 import gsap from 'gsap'
 import dayjs from 'dayjs'
 import { fetchReviewLogs, fetchWord, fetchWords, updateWord, deleteWord } from '../services/words'
 import { fetchBook } from '../services/books'
+import { addFavorite } from '../services/favorites'
 import { describeNextReview } from '../services/review'
 import {
   generateExamples,
@@ -26,7 +28,7 @@ import {
 } from '../services/ai'
 import { useSettings } from '../stores/settings'
 import { useT } from '../i18n'
-import type { Book, ReviewLog, Word } from '../types'
+import type { Book, ExampleSentence, ReviewLog, Word } from '../types'
 import { Button } from '../components/ui/button'
 import { Card, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
@@ -50,6 +52,8 @@ export default function WordDetail() {
   const [draft, setDraft] = useState<Partial<Word>>({})
   const [tagInput, setTagInput] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  // 已收藏的例句下标（会话内记忆，避免重复提交）
+  const [savedSentences, setSavedSentences] = useState<Set<number>>(new Set())
 
   const [aiLoading, setAiLoading] = useState<AIAction | null>(null)
   const [aiOutput, setAiOutput] = useState<{ action: AIAction; text: string } | null>(null)
@@ -176,6 +180,23 @@ export default function WordDetail() {
     setTagInput('')
   }
 
+  /** 把例句一键收藏到收藏本（句子分类） */
+  const saveSentence = async (i: number, ex: ExampleSentence) => {
+    if (savedSentences.has(i)) return
+    try {
+      await addFavorite({
+        kind: 'sentence',
+        content: ex.en,
+        translation: ex.cn,
+        note: '',
+        source_word_id: word.id,
+      })
+      setSavedSentences((s) => new Set(s).add(i))
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <div ref={rootRef} className="flex flex-col gap-4">
       {/* 顶部操作栏 */}
@@ -256,9 +277,24 @@ export default function WordDetail() {
           <CardTitle className="mb-2 text-sm uppercase tracking-wide text-ink-soft">{t('detail.examples')}</CardTitle>
           <ul className="flex flex-col gap-2">
             {word.example_sentences.map((ex, i) => (
-              <li key={i} className="rounded-xl bg-paper p-3">
-                <p className="font-bold text-ink">{ex.en}</p>
-                <p className="text-sm text-ink-soft">{ex.cn}</p>
+              <li key={i} className="group flex items-start justify-between gap-2 rounded-xl bg-paper p-3">
+                <div className="min-w-0">
+                  <p className="font-bold text-ink">{ex.en}</p>
+                  <p className="text-sm text-ink-soft">{ex.cn}</p>
+                </div>
+                {/* 一键收藏到句子 */}
+                <button
+                  onClick={() => saveSentence(i, ex)}
+                  title={t('detail.saveSentence')}
+                  className={`shrink-0 cursor-pointer rounded-full p-1.5 transition-all ${
+                    savedSentences.has(i)
+                      ? 'text-duo-yellow-dark'
+                      : 'text-gray-300 hover:text-duo-yellow-dark'
+                  }`}
+                  aria-label={t('detail.saveSentence')}
+                >
+                  <Star size={16} fill={savedSentences.has(i) ? 'currentColor' : 'none'} />
+                </button>
               </li>
             ))}
           </ul>

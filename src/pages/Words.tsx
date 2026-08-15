@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Plus, Trash2 } from 'lucide-react'
 import gsap from 'gsap'
 import { fetchAllTags, fetchWordsPage, type WordFilter } from '../services/words'
 import {
@@ -18,6 +18,8 @@ import { Badge } from '../components/ui/badge'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '../components/ui/dialog'
+import { Paginator } from '../components/Paginator'
+import { computePageSize } from '../lib/pageSize'
 import { cn } from '../lib/utils'
 
 const MASTERY_TABS = [
@@ -27,36 +29,8 @@ const MASTERY_TABS = [
   { key: 'mastered', labelKey: 'words.fMastered' },
 ] as const
 
-// ---------- 每页条数：按屏幕高度估算（卡片约 112px + 顶部固定区域约 330px） ----------
-const ITEM_HEIGHT = 112
-const RESERVED_HEIGHT = 330
-const MIN_PAGE_SIZE = 3
-const MAX_PAGE_SIZE = 15
-
-function computePageSize(): number {
-  const vh = typeof window === 'undefined' ? 800 : window.innerHeight
-  const size = Math.floor((vh - RESERVED_HEIGHT) / ITEM_HEIGHT)
-  return Math.min(MAX_PAGE_SIZE, Math.max(MIN_PAGE_SIZE, size))
-}
-
-/** 生成页码序列（含省略号）：1 … 4 5 6 … 10 */
-function pageNumbers(current: number, totalPages: number): (number | '...')[] {
-  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i)
-  const set = new Set<number>(
-    [0, 1, totalPages - 2, totalPages - 1, current - 1, current, current + 1].filter(
-      (n) => n >= 0 && n < totalPages,
-    ),
-  )
-  const sorted = [...set].sort((a, b) => a - b)
-  const out: (number | '...')[] = []
-  let prev = -2
-  for (const n of sorted) {
-    if (n - prev > 1) out.push('...')
-    out.push(n)
-    prev = n
-  }
-  return out
-}
+// 每页条数：按屏幕高度估算（卡片约 112px + 顶部固定区域约 330px）
+const itemHeight = () => computePageSize(112, 330)
 
 export default function Words() {
   const t = useT()
@@ -70,7 +44,7 @@ export default function Words() {
   const [sort, setSort] = useState<WordFilter['sort']>('newest')
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(computePageSize)
+  const [pageSize, setPageSize] = useState(itemHeight)
   const [total, setTotal] = useState(0)
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -89,20 +63,6 @@ export default function Words() {
         loadBooks()
         fetchAllTags().then(setTags).catch(console.error)
       })
-  }, [])
-
-  // 屏幕尺寸变化 → 重新计算每页条数（变化时触发重新加载第 1 页）
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>
-    const onResize = () => {
-      clearTimeout(timer)
-      timer = setTimeout(() => setPageSize(computePageSize()), 150)
-    }
-    window.addEventListener('resize', onResize)
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('resize', onResize)
-    }
   }, [])
 
   // 取某一页数据
@@ -162,16 +122,19 @@ export default function Words() {
     return <Badge variant="gray">{t('words.fNew')}</Badge>
   }
 
-  // ---------- 分页器 ----------
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-  const goTo = (p: number) => {
-    if (p >= 0 && p < totalPages && p !== page) fetchPage(p)
-  }
-  const pageBtnCls = (active: boolean) =>
-    cn(
-      'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-sm font-extrabold transition-colors',
-      active ? 'bg-duo text-white' : 'text-ink-soft hover:bg-gray-100',
-    )
+  // 每页条数随屏幕尺寸变化（150ms 防抖），变化时回到第 1 页
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+    const onResize = () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => setPageSize(itemHeight()), 150)
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col gap-4">
@@ -285,41 +248,17 @@ export default function Words() {
       )}
 
       {/* 分页器 */}
-      {!loading && words.length > 0 && totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1.5 py-2">
-          <button
-            onClick={() => goTo(page - 1)}
-            disabled={page === 0}
-            className={cn(pageBtnCls(false), 'disabled:cursor-not-allowed disabled:opacity-30')}
-            aria-label={t('words.prev')}
-          >
-            <ChevronLeft size={18} />
-          </button>
-          {pageNumbers(page, totalPages).map((n, i) =>
-            n === '...' ? (
-              <span key={`e${i}`} className="px-1 text-sm font-bold text-gray-400">
-                …
-              </span>
-            ) : (
-              <button key={n} onClick={() => goTo(n)} className={pageBtnCls(n === page)}>
-                {n + 1}
-              </button>
-            ),
-          )}
-          <button
-            onClick={() => goTo(page + 1)}
-            disabled={page >= totalPages - 1}
-            className={cn(pageBtnCls(false), 'disabled:cursor-not-allowed disabled:opacity-30')}
-            aria-label={t('words.next')}
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      )}
       {!loading && words.length > 0 && (
-        <p className="pb-1 text-center text-xs font-bold text-gray-400">
-          {total} {t('words.allShown')}
-        </p>
+        <>
+          <Paginator
+            page={page}
+            totalPages={Math.max(1, Math.ceil(total / pageSize))}
+            onGoTo={fetchPage}
+          />
+          <p className="pb-1 text-center text-xs font-bold text-gray-400">
+            {total} {t('words.allShown')}
+          </p>
+        </>
       )}
 
       {/* 单词本管理弹窗：创建 + 删除 */}

@@ -17,6 +17,7 @@ export default {
   'nav.settings': 'Settings',
   'nav.addWord': 'Add word',
   'nav.read': 'Read',
+  'nav.favorites': 'Favorites',
   'layout.dayStreak': 'day streak',
 
   // 登录
@@ -66,6 +67,24 @@ export default {
   'read.pause': 'Pause',
   'read.resume': 'Resume',
   'read.stop': 'Stop',
+
+  // 收藏本
+  'fav.title': 'Favorites',
+  'fav.all': 'All',
+  'fav.phrases': 'Phrases',
+  'fav.sentences': 'Sentences',
+  'fav.empty': 'No favorites yet. Tap + to save a phrase or sentence!',
+  'fav.add': 'Add favorite',
+  'fav.contentPh': 'e.g. hit the road',
+  'fav.translation': 'Translation (optional)',
+  'fav.note': 'Note (optional)',
+  'fav.save': 'Save',
+  'fav.translating': 'AI translating…',
+  'fav.deleteTitle': 'Delete this favorite?',
+  'fav.deleteMsg': 'This cannot be undone.',
+  'fav.autoTranslate': 'Auto translate',
+  'dash.favorites': 'Phrases & sentences you saved',
+  'detail.saveSentence': 'Save this sentence',
 
   // 词库
   'words.title': 'My library',
