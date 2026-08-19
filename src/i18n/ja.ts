@@ -18,6 +18,7 @@ export default {
   'nav.addWord': '単語を追加',
   'nav.read': '読書',
   'nav.favorites': 'お気に入り',
+  'nav.songs': '英語の歌',
   'layout.dayStreak': '日連続',
 
   // 登录
@@ -83,7 +84,26 @@ export default {
   'fav.deleteMsg': '元に戻せません。',
   'fav.autoTranslate': '自動翻訳',
   'dash.favorites': '保存したフレーズと文',
+  'dash.songs': '歌詞で学ぶ英語の歌',
   'detail.saveSentence': 'この文を保存',
+
+  // 英文歌
+  'song.title': '英語の歌',
+  'song.upload': '曲をアップロード',
+  'song.uploading': 'アップロード中…',
+  'song.empty': 'まだ曲がありません。mp3 + lrc をアップロードしましょう！',
+  'song.unknownArtist': '不明なアーティスト',
+  'song.titlePh': '曲名',
+  'song.artistPh': 'アーティスト（任意）',
+  'song.pickAudio': 'mp3 を選択',
+  'song.pickLrc': 'lrc を選択',
+  'song.filesHint': '音声: .mp3 · 歌詞: タイムスタンプ付き .lrc',
+  'song.deleteTitle': 'この曲を削除しますか？',
+  'song.deleteMsg': '音声と歌詞ファイルも一緒に削除されます。',
+  'song.loop': '1行リピート',
+  'song.lookup': '単語を調べる',
+  'song.lookupHint': '調べるモード：歌詞の単語をタップするとすぐに調べられます',
+  'song.lookupGo': '調べる',
 
   // 词库
   'words.title': 'マイライブラリ',

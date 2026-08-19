@@ -9,21 +9,13 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Card } from '../components/ui/card'
 import { AILoading } from '../components/AILoading'
+import { sanitizeWord } from '../lib/text'
 import { cn } from '../lib/utils'
 
 interface Popover {
   text: string
   x: number
   y: number
-}
-
-/** 清洗选中文本：去首尾标点、只保留单个词（允许中日韩等字符） */
-function sanitizeWord(raw: string): string | null {
-  let w = raw.trim()
-  // 去首尾非字母数字字符（。，、！？,.!?;:'"()[]「」『』…·）
-  w = w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '')
-  if (!w || w.length > 40 || /\s/.test(w)) return null // 太长 / 含空格 → 不是单个词
-  return w
 }
 
 export default function Read() {

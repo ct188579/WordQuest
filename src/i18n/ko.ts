@@ -18,6 +18,7 @@ export default {
   'nav.addWord': '단어 추가',
   'nav.read': '읽기',
   'nav.favorites': '즐겨찾기',
+  'nav.songs': '영어 노래',
   'layout.dayStreak': '일 연속',
 
   // 登录
@@ -83,7 +84,26 @@ export default {
   'fav.deleteMsg': '되돌릴 수 없습니다.',
   'fav.autoTranslate': '자동 번역',
   'dash.favorites': '저장한 구절과 문장',
+  'dash.songs': '가사로 배우는 영어 노래',
   'detail.saveSentence': '이 문장 저장',
+
+  // 英文歌
+  'song.title': '영어 노래',
+  'song.upload': '노래 업로드',
+  'song.uploading': '업로드 중…',
+  'song.empty': '아직 노래가 없어요. mp3 + lrc를 업로드해 보세요!',
+  'song.unknownArtist': '알 수 없는 가수',
+  'song.titlePh': '노래 제목',
+  'song.artistPh': '가수 (선택)',
+  'song.pickAudio': 'mp3 선택',
+  'song.pickLrc': 'lrc 선택',
+  'song.filesHint': '오디오: .mp3 · 가사: 타임스탬프가 있는 .lrc',
+  'song.deleteTitle': '이 노래를 삭제할까요?',
+  'song.deleteMsg': '오디오와 가사 파일도 함께 삭제됩니다.',
+  'song.loop': '한 줄 반복',
+  'song.lookup': '단어 조회',
+  'song.lookupHint': '조회 모드: 가사 속 단어를 눌러 바로 조회하세요',
+  'song.lookupGo': '조회',
 
   // 词库
   'words.title': '내 단어장',

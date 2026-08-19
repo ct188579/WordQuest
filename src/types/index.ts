@@ -31,6 +31,18 @@ export interface Favorite {
   created_at: string
 }
 
+/** songs 表行结构：英文歌（音频 + LRC 歌词） */
+export interface Song {
+  id: string
+  user_id: string
+  title: string
+  artist: string | null
+  audio_path: string
+  lrc_path: string
+  duration: number | null
+  created_at: string
+}
+
 /** 新增收藏时的可写字段 */
 export interface FavoriteInsert {
   kind: FavoriteKind

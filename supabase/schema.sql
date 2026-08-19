@@ -168,3 +168,42 @@ create policy "favorites: owner update" on public.favorites
   with check (auth.uid() = user_id and public.is_allowed_user());
 create policy "favorites: owner delete" on public.favorites
   for delete using (auth.uid() = user_id and public.is_allowed_user());
+
+-- ---------- 9. songs: 英文歌学习（音频 + LRC 歌词） ----------
+create table if not exists public.songs (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  title       text not null,
+  artist      text,
+  audio_path  text not null,   -- Storage 桶中的 mp3 路径
+  lrc_path    text not null,   -- Storage 桶中的 lrc 路径
+  duration    real,            -- 秒
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists idx_songs_user on public.songs (user_id, created_at desc);
+
+alter table public.songs enable row level security;
+
+create policy "songs: owner select" on public.songs
+  for select using (auth.uid() = user_id and public.is_allowed_user());
+create policy "songs: owner insert" on public.songs
+  for insert with check (auth.uid() = user_id and public.is_allowed_user());
+create policy "songs: owner delete" on public.songs
+  for delete using (auth.uid() = user_id and public.is_allowed_user());
+
+-- 歌曲文件存储桶（私有，走签名 URL）
+insert into storage.buckets (id, name, public)
+values ('songs', 'songs', false)
+on conflict (id) do nothing;
+
+-- 存储对象 RLS：只有白名单用户能读写 songs 桶
+drop policy if exists "songs bucket: select" on storage.objects;
+drop policy if exists "songs bucket: insert" on storage.objects;
+drop policy if exists "songs bucket: delete" on storage.objects;
+create policy "songs bucket: select" on storage.objects
+  for select using (bucket_id = 'songs' and public.is_allowed_user());
+create policy "songs bucket: insert" on storage.objects
+  for insert with check (bucket_id = 'songs' and public.is_allowed_user());
+create policy "songs bucket: delete" on storage.objects
+  for delete using (bucket_id = 'songs' and public.is_allowed_user());

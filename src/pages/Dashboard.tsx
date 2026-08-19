@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Flame, Target, CheckCircle2, Trophy, Layers, BookOpenText, Star, ChevronRight } from 'lucide-react'
+import { Flame, Target, CheckCircle2, Trophy, Layers, BookOpenText, Star, Music2, ChevronRight } from 'lucide-react'
 import gsap from 'gsap'
 import dayjs from 'dayjs'
 import { fetchDashboardStats } from '../services/words'
@@ -113,6 +113,22 @@ export default function Dashboard() {
             <div>
               <p className="font-extrabold text-ink">{t('nav.favorites')}</p>
               <p className="text-xs font-bold text-ink-soft">{t('dash.favorites')}</p>
+            </div>
+          </div>
+          <ChevronRight size={18} className="text-gray-300" />
+        </Card>
+      </Link>
+
+      {/* 英文歌入口 */}
+      <Link to="/songs">
+        <Card className="flex items-center justify-between transition-colors hover:border-duo-blue">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-duo-blue/10">
+              <Music2 size={22} className="text-duo-blue" />
+            </span>
+            <div>
+              <p className="font-extrabold text-ink">{t('nav.songs')}</p>
+              <p className="text-xs font-bold text-ink-soft">{t('dash.songs')}</p>
             </div>
           </div>
           <ChevronRight size={18} className="text-gray-300" />

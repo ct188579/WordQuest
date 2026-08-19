@@ -18,6 +18,7 @@ export default {
   'nav.addWord': '添加单词',
   'nav.read': '阅读',
   'nav.favorites': '收藏本',
+  'nav.songs': '英文歌',
   'layout.dayStreak': '天连续打卡',
 
   // 登录
@@ -83,7 +84,26 @@ export default {
   'fav.deleteMsg': '此操作无法撤销。',
   'fav.autoTranslate': '自动翻译',
   'dash.favorites': '收藏的短语与句子',
+  'dash.songs': '跟着歌词学英文歌',
   'detail.saveSentence': '收藏此句',
+
+  // 英文歌
+  'song.title': '英文歌',
+  'song.upload': '上传歌曲',
+  'song.uploading': '上传中…',
+  'song.empty': '还没有歌曲。上传 mp3 + lrc 开始学唱吧！',
+  'song.unknownArtist': '未知歌手',
+  'song.titlePh': '歌曲名',
+  'song.artistPh': '歌手（可选）',
+  'song.pickAudio': '选择 mp3',
+  'song.pickLrc': '选择 lrc',
+  'song.filesHint': '音频：.mp3 · 歌词：带时间轴的 .lrc',
+  'song.deleteTitle': '删除这首歌？',
+  'song.deleteMsg': '音频和歌词文件会一起删除，无法恢复。',
+  'song.loop': '单句循环',
+  'song.lookup': '查词',
+  'song.lookupHint': '查词模式：点击歌词中的任意单词即可查询',
+  'song.lookupGo': '查询',
 
   // 词库
   'words.title': '我的词库',

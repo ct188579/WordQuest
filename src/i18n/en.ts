@@ -18,6 +18,7 @@ export default {
   'nav.addWord': 'Add word',
   'nav.read': 'Read',
   'nav.favorites': 'Favorites',
+  'nav.songs': 'Songs',
   'layout.dayStreak': 'day streak',
 
   // 登录
@@ -84,7 +85,26 @@ export default {
   'fav.deleteMsg': 'This cannot be undone.',
   'fav.autoTranslate': 'Auto translate',
   'dash.favorites': 'Phrases & sentences you saved',
+  'dash.songs': 'Learn English songs with lyrics',
   'detail.saveSentence': 'Save this sentence',
+
+  // 英文歌
+  'song.title': 'English Songs',
+  'song.upload': 'Upload song',
+  'song.uploading': 'Uploading…',
+  'song.empty': 'No songs yet. Upload an mp3 + lrc to start!',
+  'song.unknownArtist': 'Unknown artist',
+  'song.titlePh': 'Song title',
+  'song.artistPh': 'Artist (optional)',
+  'song.pickAudio': 'Pick mp3',
+  'song.pickLrc': 'Pick lrc',
+  'song.filesHint': 'Audio: .mp3 · Lyrics: .lrc (timestamped)',
+  'song.deleteTitle': 'Delete this song?',
+  'song.deleteMsg': 'The audio and lyrics files will be deleted too.',
+  'song.loop': 'Loop line',
+  'song.lookup': 'Lookup',
+  'song.lookupHint': 'Lookup mode: tap any word in the lyrics to look it up',
+  'song.lookupGo': 'Look up',
 
   // 词库
   'words.title': 'My library',
