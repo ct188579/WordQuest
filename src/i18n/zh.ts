@@ -68,6 +68,26 @@ export default {
   'read.resume': '继续',
   'read.stop': '停止',
 
+  // 话题推荐 + 联网搜最新资料
+  'read.suggestTitle': '今天读点什么',
+  'read.suggestRefresh': '换一批',
+  'read.suggestLoading': '正在为你想话题…',
+  'read.suggestFromInterests': '按你的兴趣推荐。',
+  'read.suggestNoInterests': '在设置里填写兴趣方向，推荐会更合你胃口。',
+  'read.goSettings': '去设置',
+  'read.searchWeb': '联网搜最新',
+  'read.searchDesc': '生成前先联网检索最新资料，文章写到的是最近发生的事，而不只是模型原本知道的。',
+  'read.searchNoKey': '在设置里填入搜索 API Key，就能读到最近发生的事。',
+  'read.freshness': '资料时效',
+  'read.freshWeek': '近一周',
+  'read.freshMonth': '近一月',
+  'read.freshYear': '近一年',
+  'read.freshAny': '不限',
+  'read.searching': '正在检索最新资料',
+  'read.searchFailed': '联网检索失败，已改用模型自身知识生成。',
+  'read.searchEmpty': '没检索到新资料，已改用模型自身知识生成。',
+  'read.sources': '参考来源',
+
   // 收藏本
   'fav.title': '收藏本',
   'fav.all': '全部',
@@ -201,6 +221,15 @@ export default {
   'settings.model': '模型',
   'settings.save': '保存',
   'settings.saved': '已保存！',
+
+  // 阅读偏好 + 联网搜索
+  'settings.interests': '兴趣方向',
+  'settings.interestsDesc': 'AI 会用这些兴趣推荐阅读话题，多个用逗号分隔。',
+  'settings.interestsPh': '例如：人工智能、咖啡、篮球、创业',
+  'settings.search': '联网搜索',
+  'settings.searchDesc': '填入 Tavily API Key 后，生成文章前会先联网检索最新资料，让文章写到最近发生的事。',
+  'settings.searchKey': 'Tavily API Key',
+  'settings.searchLocalOnly': '密钥只保存在本机浏览器，不会写进代码或仓库。',
   'settings.account': '账号',
   'settings.signOut': '退出登录',
   'settings.language': '界面语言',

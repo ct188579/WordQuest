@@ -1,9 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles, X, Search, RefreshCw, Volume2, Square, Pause, Play } from 'lucide-react'
+import {
+  Sparkles,
+  X,
+  Search,
+  RefreshCw,
+  Volume2,
+  Square,
+  Pause,
+  Play,
+  Lightbulb,
+  Globe,
+  ExternalLink,
+} from 'lucide-react'
 import gsap from 'gsap'
-import { generateArticle, AIError } from '../services/ai'
+import { generateArticle, suggestTopics, AIError, type TopicSuggestion } from '../services/ai'
+import { searchWeb, buildSearchContext, sourceHost, SearchError } from '../services/search'
 import { useArticle } from '../stores/article'
+import { useSettings, type Freshness } from '../stores/settings'
 import { useT, LANGUAGES, SPEECH_LANGS } from '../i18n'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
@@ -18,22 +32,44 @@ interface Popover {
   y: number
 }
 
+const FRESHNESS: { key: Freshness; labelKey: string }[] = [
+  { key: 'week', labelKey: 'read.freshWeek' },
+  { key: 'month', labelKey: 'read.freshMonth' },
+  { key: 'year', labelKey: 'read.freshYear' },
+  { key: 'any', labelKey: 'read.freshAny' },
+]
+
+/**
+ * 话题推荐缓存（模块级）：
+ * 阅读页跳到添加单词页再返回时会重新挂载，缓存一次避免每次回来都白花一次 AI 调用。
+ */
+let suggestionCache: { key: string; items: TopicSuggestion[] } | null = null
+
 export default function Read() {
   const navigate = useNavigate()
   const t = useT()
-  const { topic, title, content, lang, savedAt, setArticle, clearArticle } = useArticle()
+  const { topic, title, content, lang, savedAt, sources, setArticle, clearArticle } = useArticle()
+  const { interests, tavilyKey, useSearch, freshness, setUseSearch, setFreshness } = useSettings()
 
   const [topicInput, setTopicInput] = useState('')
   const [articleLang, setArticleLang] = useState(lang)
   const [loading, setLoading] = useState(false)
+  const [searching, setSearching] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
   const [popover, setPopover] = useState<Popover | null>(null)
   // 朗读状态：voiceIdx 为当前正在读的段落下标（-1 = 未播放）
   const [voiceIdx, setVoiceIdx] = useState(-1)
   const [paused, setPaused] = useState(false)
 
+  // ---------- AI 话题推荐 ----------
+  const [suggestions, setSuggestions] = useState<TopicSuggestion[]>([])
+  const [sugLoading, setSugLoading] = useState(false)
+
   const articleRef = useRef<HTMLDivElement>(null)
   const popRef = useRef<HTMLDivElement>(null)
+
+  const hasSearchKey = Boolean(tavilyKey.trim())
 
   // 朗读文本序列：标题 + 各段落
   const paragraphs = useMemo(
@@ -91,21 +127,96 @@ export default function Read() {
     [],
   )
 
-  // 生成文章
-  const handleGenerate = async () => {
-    const tp = topicInput.trim()
+  // ---------- 拉取话题推荐 ----------
+  const loadSuggestions = useCallback(
+    async (force = false) => {
+      const cacheKey = `${interests}|${articleLang}`
+      if (!force && suggestionCache && suggestionCache.key === cacheKey) {
+        setSuggestions(suggestionCache.items)
+        return
+      }
+      setSugLoading(true)
+      try {
+        const items = await suggestTopics(
+          interests,
+          articleLang,
+          undefined,
+          6,
+          force ? suggestions.map((s) => s.topic) : [],
+        )
+        if (items.length) {
+          setSuggestions(items)
+          suggestionCache = { key: cacheKey, items }
+        }
+      } catch {
+        // 推荐失败不打扰用户：输入框照常能自己填话题
+      } finally {
+        setSugLoading(false)
+      }
+    },
+    [interests, articleLang, suggestions],
+  )
+
+  // 进入页面 / 切换文章语言 / 修改兴趣方向 时拉取推荐（命中缓存则不重复请求）
+  // 已有文章时不打扰：等用户点「新文章」再推荐
+  useEffect(() => {
+    if (content) return
+    loadSuggestions(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interests, articleLang, content])
+
+  // ---------- 生成文章（可选先联网检索） ----------
+  const generate = async (rawTopic: string) => {
+    const tp = rawTopic.trim()
     if (!tp) return
     stopReading()
     setLoading(true)
     setError(null)
+    setNotice(null)
+
+    // 1) 联网检索最新资料（失败自动降级为不联网，不阻塞生成）
+    let context = ''
+    let found: { title: string; url: string; host: string }[] = []
+    if (useSearch && hasSearchKey) {
+      setSearching(true)
+      try {
+        const results = await searchWeb(tp, { freshness, maxResults: 5 })
+        if (results.length) {
+          context = buildSearchContext(results)
+          found = results.map((r) => ({ title: r.title, url: r.url, host: sourceHost(r.url) }))
+        } else {
+          setNotice(t('read.searchEmpty'))
+        }
+      } catch (e) {
+        const msg = e instanceof SearchError ? e.message : t('read.searchFailed')
+        setNotice(`${t('read.searchFailed')}（${msg}）`)
+      } finally {
+        setSearching(false)
+      }
+    }
+
+    // 2) 带着资料写文章
     try {
-      const article = await generateArticle(tp, articleLang)
-      setArticle({ topic: tp, title: article.title, content: article.content, lang: articleLang })
+      const article = await generateArticle(tp, articleLang, context)
+      setArticle({
+        topic: tp,
+        title: article.title,
+        content: article.content,
+        lang: articleLang,
+        sources: found,
+      })
     } catch (e) {
       setError(e instanceof AIError ? e.message : 'Failed to generate. Try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleGenerate = () => generate(topicInput)
+
+  const pickSuggestion = (s: TopicSuggestion) => {
+    setTopicInput(s.topic)
+    generate(s.topic)
   }
 
   // ---------- 选中文字 → 弹出查询悬浮窗 ----------
@@ -181,6 +292,110 @@ export default function Read() {
             </Button>
           </div>
 
+          {/* AI 话题推荐：想不出话题时直接点一个 */}
+          <Card className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-2">
+              <CardTitleLike icon={Lightbulb} text={t('read.suggestTitle')} />
+              <button
+                onClick={() => loadSuggestions(true)}
+                disabled={sugLoading}
+                className="flex shrink-0 cursor-pointer items-center gap-1 rounded-xl px-2 py-1 text-xs font-extrabold text-ink-soft transition-colors hover:bg-gray-100 disabled:opacity-40"
+              >
+                <RefreshCw size={13} className={cn(sugLoading && 'animate-spin')} />
+                {t('read.suggestRefresh')}
+              </button>
+            </div>
+
+            {sugLoading && suggestions.length === 0 ? (
+              <p className="py-2 text-sm font-bold text-ink-soft">{t('read.suggestLoading')}</p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {suggestions.map((s) => (
+                  <button
+                    key={s.topic}
+                    onClick={() => pickSuggestion(s)}
+                    disabled={loading}
+                    title={s.reason}
+                    className="cursor-pointer rounded-2xl border-2 border-gray-200 bg-white px-3 py-2 text-left text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-duo hover:text-duo disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {s.topic}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <p className="text-xs font-semibold text-ink-soft">
+              {interests.trim() ? t('read.suggestFromInterests') : t('read.suggestNoInterests')}{' '}
+              <button
+                onClick={() => navigate('/settings')}
+                className="cursor-pointer font-extrabold text-duo-blue underline decoration-dotted"
+              >
+                {t('read.goSettings')}
+              </button>
+            </p>
+          </Card>
+
+          {/* 联网搜最新资料 */}
+          <Card className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-2">
+              <CardTitleLike icon={Globe} text={t('read.searchWeb')} />
+              <button
+                onClick={() => setUseSearch(!useSearch)}
+                disabled={!hasSearchKey}
+                aria-pressed={useSearch && hasSearchKey}
+                className={cn(
+                  'flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors',
+                  hasSearchKey ? 'cursor-pointer' : 'cursor-not-allowed opacity-40',
+                  useSearch && hasSearchKey ? 'bg-duo' : 'bg-gray-300',
+                )}
+              >
+                <span
+                  className={cn(
+                    'block h-5 w-5 rounded-full bg-white transition-transform',
+                    useSearch && hasSearchKey && 'translate-x-5',
+                  )}
+                />
+              </button>
+            </div>
+
+            {hasSearchKey ? (
+              <>
+                <p className="text-sm font-semibold text-ink-soft">{t('read.searchDesc')}</p>
+                {useSearch && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-extrabold uppercase text-ink-soft">
+                      {t('read.freshness')}
+                    </span>
+                    {FRESHNESS.map((f) => (
+                      <button
+                        key={f.key}
+                        onClick={() => setFreshness(f.key)}
+                        className={cn(
+                          'cursor-pointer rounded-full px-3 py-1 text-xs font-extrabold transition-colors',
+                          freshness === f.key
+                            ? 'bg-duo-blue text-white'
+                            : 'bg-gray-100 text-ink-soft hover:bg-gray-200',
+                        )}
+                      >
+                        {t(f.labelKey)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-sm font-semibold text-ink-soft">
+                {t('read.searchNoKey')}{' '}
+                <button
+                  onClick={() => navigate('/settings')}
+                  className="cursor-pointer font-extrabold text-duo-blue underline decoration-dotted"
+                >
+                  {t('read.goSettings')}
+                </button>
+              </p>
+            )}
+          </Card>
+
           {/* 文章语言 */}
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-extrabold uppercase text-ink-soft">
@@ -205,7 +420,7 @@ export default function Read() {
 
           {loading && (
             <Card className="flex items-center justify-center py-8">
-              <AILoading label={t('read.generating')} />
+              <AILoading label={searching ? t('read.searching') : t('read.generating')} />
             </Card>
           )}
           {error && (
@@ -249,11 +464,18 @@ export default function Read() {
                 clearArticle()
                 setTopicInput(topic)
                 setError(null)
+                setNotice(null)
               }}
             >
               <RefreshCw size={14} /> {t('read.newArticle')}
             </Button>
           </div>
+
+          {notice && (
+            <p className="rounded-xl bg-duo-yellow/15 px-3 py-2 text-xs font-bold text-duo-yellow-dark">
+              {notice}
+            </p>
+          )}
 
           <Card className="relative overflow-hidden">
             {/* 提示条 */}
@@ -294,6 +516,31 @@ export default function Read() {
               </p>
             )}
           </Card>
+
+          {/* 参考来源（联网检索到的资料） */}
+          {sources.length > 0 && (
+            <Card className="flex flex-col gap-2">
+              <CardTitleLike icon={Globe} text={`${t('read.sources')} · ${sources.length}`} />
+              <ul className="flex flex-col gap-1.5">
+                {sources.map((s) => (
+                  <li key={s.url}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-start gap-1.5 text-sm font-bold text-duo-blue-dark hover:underline"
+                    >
+                      <ExternalLink size={13} className="mt-1 shrink-0" />
+                      <span className="min-w-0">
+                        <span className="text-ink">{s.title}</span>
+                        <span className="ml-1 text-xs font-semibold text-ink-soft">· {s.host}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
         </>
       )}
 
@@ -326,5 +573,15 @@ export default function Read() {
         </div>
       )}
     </div>
+  )
+}
+
+/** 卡片小标题（图标 + 文字），避免每处重复写样式 */
+function CardTitleLike({ icon: Icon, text }: { icon: typeof Globe; text: string }) {
+  return (
+    <span className="flex items-center gap-2 text-sm font-black text-ink">
+      <Icon size={16} className="text-duo-blue" />
+      {text}
+    </span>
   )
 }

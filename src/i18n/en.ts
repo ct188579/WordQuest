@@ -69,6 +69,26 @@ export default {
   'read.resume': 'Resume',
   'read.stop': 'Stop',
 
+  // 话题推荐 + 联网搜最新资料
+  'read.suggestTitle': 'Today’s topic ideas',
+  'read.suggestRefresh': 'More ideas',
+  'read.suggestLoading': 'Thinking of topics for you…',
+  'read.suggestFromInterests': 'Based on your interests.',
+  'read.suggestNoInterests': 'Add your interests in Settings to get better ideas.',
+  'read.goSettings': 'Settings',
+  'read.searchWeb': 'Search the web',
+  'read.searchDesc': 'Looks up the latest material online first, so the article covers what just happened — not only what the model already knew.',
+  'read.searchNoKey': 'Add a search API key in Settings to read about recent events.',
+  'read.freshness': 'Source freshness',
+  'read.freshWeek': 'Past week',
+  'read.freshMonth': 'Past month',
+  'read.freshYear': 'Past year',
+  'read.freshAny': 'Any time',
+  'read.searching': 'Searching for the latest material',
+  'read.searchFailed': 'Web search failed — the article was written from the model knowledge instead.',
+  'read.searchEmpty': 'No fresh material found — the article was written from the model knowledge.',
+  'read.sources': 'Sources',
+
   // 收藏本
   'fav.title': 'Favorites',
   'fav.all': 'All',
@@ -203,6 +223,15 @@ export default {
   'settings.model': 'Model',
   'settings.save': 'Save',
   'settings.saved': 'Saved!',
+
+  // 阅读偏好 + 联网搜索
+  'settings.interests': 'Reading interests',
+  'settings.interestsDesc': 'The AI uses these to suggest reading topics. Separate them with commas.',
+  'settings.interestsPh': 'e.g. artificial intelligence, coffee, basketball, startups',
+  'settings.search': 'Web search',
+  'settings.searchDesc': 'With a Tavily API key the article is grounded in the freshest material found online before it is written.',
+  'settings.searchKey': 'Tavily API key',
+  'settings.searchLocalOnly': 'The key is stored only in this browser — never in code or in the repo.',
   'settings.account': 'Account',
   'settings.signOut': 'Sign out',
   'settings.language': 'Interface language',

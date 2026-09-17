@@ -68,6 +68,26 @@ export default {
   'read.resume': '再開',
   'read.stop': '停止',
 
+  // 话题推荐 + 联网搜最新资料
+  'read.suggestTitle': '今日は何を読む？',
+  'read.suggestRefresh': '別の候補',
+  'read.suggestLoading': 'おすすめを考えています…',
+  'read.suggestFromInterests': '興味に合わせたおすすめです。',
+  'read.suggestNoInterests': '設定で興味を入力すると、もっと合った候補が出ます。',
+  'read.goSettings': '設定へ',
+  'read.searchWeb': 'ウェブ検索',
+  'read.searchDesc': '生成前に最新の資料を検索するので、最近起きたことを扱った記事になります。',
+  'read.searchNoKey': '設定で検索APIキーを入れると最近の出来事を読めます。',
+  'read.freshness': '資料の期間',
+  'read.freshWeek': '過去1週間',
+  'read.freshMonth': '過去1か月',
+  'read.freshYear': '過去1年',
+  'read.freshAny': '指定なし',
+  'read.searching': '最新資料を検索中',
+  'read.searchFailed': 'ウェブ検索に失敗 — モデルの知識で記事を作成しました。',
+  'read.searchEmpty': '新しい資料が見つからず、モデルの知識で作成しました。',
+  'read.sources': '参考リンク',
+
   // 收藏本
   'fav.title': 'お気に入り',
   'fav.all': 'すべて',
@@ -201,6 +221,15 @@ export default {
   'settings.model': 'モデル',
   'settings.save': '保存',
   'settings.saved': '保存しました！',
+
+  // 阅读偏好 + 联网搜索
+  'settings.interests': '興味・関心',
+  'settings.interestsDesc': 'AIがこの興味をもとに読む話題を提案します。カンマ区切りで入力。',
+  'settings.interestsPh': '例：人工知能、コーヒー、バスケ、起業',
+  'settings.search': 'ウェブ検索',
+  'settings.searchDesc': 'Tavily APIキーを入れると、記事を書く前に最新資料を検索します。',
+  'settings.searchKey': 'Tavily APIキー',
+  'settings.searchLocalOnly': 'キーはこのブラウザにのみ保存され、コードやリポジトリには入りません。',
   'settings.account': 'アカウント',
   'settings.signOut': 'ログアウト',
   'settings.language': '表示言語',

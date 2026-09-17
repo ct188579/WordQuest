@@ -9,6 +9,7 @@ import {
   Database,
   Download,
   Upload,
+  Lightbulb,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useSettings } from '../stores/settings'
@@ -21,8 +22,20 @@ import { Card, CardTitle } from '../components/ui/card'
 import { AILoading } from '../components/AILoading'
 
 export default function Settings() {
-  const { apiKey, baseUrl, model, language, setApiKey, setBaseUrl, setModel, setLanguage } =
-    useSettings()
+  const {
+    apiKey,
+    baseUrl,
+    model,
+    language,
+    interests,
+    tavilyKey,
+    setApiKey,
+    setBaseUrl,
+    setModel,
+    setLanguage,
+    setInterests,
+    setTavilyKey,
+  } = useSettings()
   const signOut = useAuth((s) => s.signOut)
   const email = useAuth((s) => s.session?.user?.email)
   const navigate = useNavigate()
@@ -158,6 +171,49 @@ export default function Settings() {
             t('settings.save')
           )}
         </Button>
+      </Card>
+
+      {/* 阅读偏好：兴趣方向（用于 AI 话题推荐） */}
+      <Card className="flex flex-col gap-3">
+        <CardTitle className="flex items-center gap-2">
+          <Lightbulb size={18} className="text-duo-yellow-dark" /> {t('settings.interests')}
+        </CardTitle>
+        <p className="text-sm font-semibold text-ink-soft">{t('settings.interestsDesc')}</p>
+        <Input
+          placeholder={t('settings.interestsPh')}
+          value={interests}
+          onChange={(e) => setInterests(e.target.value)}
+        />
+      </Card>
+
+      {/* 联网搜索：生成文章前先检索最新资料 */}
+      <Card className="flex flex-col gap-3">
+        <CardTitle className="flex items-center gap-2">
+          <Globe size={18} className="text-duo" /> {t('settings.search')}
+        </CardTitle>
+        <p className="text-sm font-semibold text-ink-soft">{t('settings.searchDesc')}</p>
+        <label className="flex flex-col gap-1.5">
+          <span className="flex items-center gap-1.5 text-xs font-extrabold uppercase text-ink-soft">
+            <KeyRound size={14} /> {t('settings.searchKey')}
+          </span>
+          <Input
+            type="password"
+            placeholder="tvly-…"
+            value={tavilyKey}
+            onChange={(e) => setTavilyKey(e.target.value)}
+          />
+        </label>
+        <p className="text-xs font-semibold text-ink-soft">
+          {t('settings.searchLocalOnly')}{' '}
+          <a
+            href="https://tavily.com"
+            target="_blank"
+            rel="noreferrer"
+            className="font-extrabold text-duo-blue underline decoration-dotted"
+          >
+            tavily.com
+          </a>
+        </p>
       </Card>
 
       {/* 数据导入 / 导出 */}

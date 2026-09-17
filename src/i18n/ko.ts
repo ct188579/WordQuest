@@ -68,6 +68,26 @@ export default {
   'read.resume': '계속',
   'read.stop': '정지',
 
+  // 话题推荐 + 联网搜最新资料
+  'read.suggestTitle': '오늘은 뭘 읽을까',
+  'read.suggestRefresh': '더 보기',
+  'read.suggestLoading': '주제를 고르는 중…',
+  'read.suggestFromInterests': '관심사에 맞춘 추천입니다.',
+  'read.suggestNoInterests': '설정에서 관심사를 입력하면 추천이 더 잘 맞습니다.',
+  'read.goSettings': '설정으로',
+  'read.searchWeb': '웹 검색',
+  'read.searchDesc': '생성 전에 최신 자료를 먼저 검색해서, 최근에 일어난 일을 담은 글을 씁니다.',
+  'read.searchNoKey': '설정에 검색 API 키를 넣으면 최근 소식을 읽을 수 있습니다.',
+  'read.freshness': '자료 시점',
+  'read.freshWeek': '최근 1주',
+  'read.freshMonth': '최근 1개월',
+  'read.freshYear': '최근 1년',
+  'read.freshAny': '제한 없음',
+  'read.searching': '최신 자료 검색 중',
+  'read.searchFailed': '웹 검색 실패 — 모델 지식으로 글을 작성했습니다.',
+  'read.searchEmpty': '새 자료를 찾지 못해 모델 지식으로 작성했습니다.',
+  'read.sources': '출처',
+
   // 收藏本
   'fav.title': '즐겨찾기',
   'fav.all': '전체',
@@ -201,6 +221,15 @@ export default {
   'settings.model': '모델',
   'settings.save': '저장',
   'settings.saved': '저장됨!',
+
+  // 阅读偏好 + 联网搜索
+  'settings.interests': '관심 분야',
+  'settings.interestsDesc': 'AI가 이 관심사로 읽을 주제를 추천합니다. 쉼표로 구분하세요.',
+  'settings.interestsPh': '예: 인공지능, 커피, 농구, 창업',
+  'settings.search': '웹 검색',
+  'settings.searchDesc': 'Tavily API 키를 넣으면 글을 쓰기 전에 최신 자료를 먼저 검색합니다.',
+  'settings.searchKey': 'Tavily API 키',
+  'settings.searchLocalOnly': '키는 이 브라우저에만 저장되며 코드나 저장소에 들어가지 않습니다.',
   'settings.account': '계정',
   'settings.signOut': '로그아웃',
   'settings.language': '인터페이스 언어',

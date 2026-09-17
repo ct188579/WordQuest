@@ -283,11 +283,29 @@ export interface GeneratedArticle {
 export async function generateArticle(
   topic: string,
   lang: string = getUILanguage(),
+  /** 联网检索到的参考资料（buildSearchContext 的产物）。为空则纯靠模型知识写作 */
+  searchContext = '',
 ): Promise<GeneratedArticle> {
   const ln = langName(lang)
+
+  const grounding = searchContext
+    ? `
+
+Below is REFERENCE MATERIAL retrieved from a live web search performed just now. It is more recent than your training data:
+---
+${searchContext}
+---
+Rules when reference material is provided:
+- Treat it as the source of truth for facts, names, numbers, dates and places.
+- The article MUST cover what is genuinely current about this topic (recent developments), not just evergreen background.
+- Never invent specific figures, dates or quotes that the reference material does not support.
+- Weave the facts into a flowing article; do NOT copy the snippets verbatim and do NOT mention "the search results" or "the reference material".`
+
+    : ''
+
   return chatJSON<{ title?: string; content?: string }, GeneratedArticle>(
     JSON_ONLY,
-    `Write a ${ln} article about the topic "${topic}" for a language learner.
+    `Write a ${ln} article about the topic "${topic}" for a language learner.${grounding}
 Requirements:
 - Title: concise and catchy.
 - Content: 6-9 short paragraphs separated by blank lines (escape them as \\n\\n inside the JSON string).
@@ -296,6 +314,64 @@ Requirements:
 Return JSON: {"title": "...", "content": "paragraph1\\n\\nparagraph2\\n\\n..."}`,
     (p) => ({ title: p.title ?? topic, content: p.content ?? '' }),
     (p) => Boolean(p.title && p.content),
+  )
+}
+
+// ------------------------------------------------------------
+// 8. 阅读：根据兴趣方向推荐话题（用户可能还没想好看什么）
+// ------------------------------------------------------------
+
+export interface TopicSuggestion {
+  /** 话题本身，点击即用于生成文章 */
+  topic: string
+  /** 一句推荐理由（悬浮提示用） */
+  reason: string
+}
+
+export async function suggestTopics(
+  interests: string,
+  /** 文章将使用的语言，话题需要适合用它来写 */
+  articleLang: string = 'en',
+  uiLang: string = getUILanguage(),
+  count = 6,
+  /** 已推荐过的话题，避免「换一批」时重复 */
+  avoid: string[] = [],
+): Promise<TopicSuggestion[]> {
+  const al = langName(articleLang)
+  const ul = langName(uiLang)
+  const interestLine = interests.trim()
+    ? `The learner's stated interests are: ${interests.trim()}.`
+    : `The learner has not specified interests yet.`
+  const avoidLine = avoid.length
+    ? `\nDo NOT repeat any of these already-suggested topics: ${avoid.join(' | ')}.`
+    : ''
+
+  return chatJSON<
+    { topics?: Array<{ topic?: string; reason?: string } | string> },
+    TopicSuggestion[]
+  >(
+    JSON_ONLY,
+    `You help a learner of ${al} choose something to read today.
+${interestLine}
+Suggest ${count} specific, appealing reading topics that this person would actually want to read about, and that work well as a short ${al} article (400-600 words).
+Rules:
+- Be concrete and interesting — a named subject beats a vague category (e.g. "Why Japan's trains are never late" instead of "transport").
+- Vary the angle: mix the learner's interests with adjacent ideas, current trends, science, culture, work and everyday life.
+- Each topic must be readable on its own without prior context.
+- Write the "topic" and "reason" text in ${ul}.
+- The "reason" is one short sentence (max 12 words) explaining why it fits the learner.${avoidLine}
+Return JSON: {"topics": [{"topic": "...", "reason": "..."}]}`,
+    (p) => {
+      const list = Array.isArray(p.topics) ? p.topics : []
+      return list
+        .map((it) => {
+          if (typeof it === 'string') return { topic: it.trim(), reason: '' }
+          return { topic: (it?.topic ?? '').trim(), reason: (it?.reason ?? '').trim() }
+        })
+        .filter((it) => it.topic.length > 0)
+        .slice(0, count)
+    },
+    (p) => Array.isArray(p.topics) && p.topics.length > 0,
   )
 }
 
