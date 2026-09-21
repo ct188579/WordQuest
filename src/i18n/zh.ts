@@ -68,6 +68,48 @@ export default {
   'read.resume': '继续',
   'read.stop': '停止',
 
+  // 阅读 Tab 分页
+  'read.tabAi': 'AI 阅读',
+  'read.tabPress': '外刊精读',
+
+  // 外刊精读
+
+  // 真实外刊抓取
+  'press.modeLive': '真实外刊',
+  'press.modeAi': 'AI 仿写',
+  'press.pickFeed': '选择刊物',
+  'press.fetch': '拉取最新文章',
+  'press.fetching': '正在获取近期文章…',
+  'press.noArticles': '没拿到文章，换个刊物或时效再试。',
+  'press.readThis': '精读这篇',
+  'press.orPaste': '或粘贴任意文章链接',
+  'press.urlPh': '粘贴外刊文章链接',
+  'press.urlHint': '支持任意外刊；硬付费墙（如经济学人）可能拿不到正文。',
+  'press.extracting': '正在抓取原文',
+  'press.annotating': 'AI 正在挑生词、译段落',
+  'press.wallBlocked': '这篇没抓到正文（可能是付费墙）。换一篇，或切到 AI 仿写。',
+  'press.openOriginal': '查看原文',
+  'press.liveDisclaimer': '原文来自 {host}，仅存本地浏览器，仅供个人学习。',
+  'press.failed': '出错了，请重试。',
+  'press.chooseSource': '选择刊物',
+  'press.topicPh': '主题（可选）',
+  'press.topicHint': '留空则由 AI 为这个刊物自选一个合适的话题。',
+  'press.generate': '开始精读',
+  'press.generating': 'AI 正在仿写 {source} 风格…',
+  'press.disclaimer': 'AI 仿写，仅供学习使用，不代表该刊物真实观点。',
+  'press.another': '换一篇',
+  'press.showTrans': '译文',
+  'press.hideTrans': '收起',
+  'press.speakPara': '朗读本段',
+  'press.vocab': '核心词汇',
+  'press.addToWords': '收入词库',
+
+  // 划词查询（选中单词 → 快速查词 / 跳转词库）
+  'press.selectHint': '选中任意单词，即可一键查词或跳到词库搜索',
+  'press.lookupWord': '查这个词',
+  'press.lookupPhrase': '查这个短语',
+  'press.searchLibrary': '词库搜索',
+
   // 话题推荐 + 联网搜最新资料
   'read.suggestTitle': '今天读点什么',
   'read.suggestRefresh': '换一批',
@@ -166,6 +208,7 @@ export default {
   'add.roots': '构词解析',
   'add.tags': '标签（可选）',
   'add.tagPlaceholder': '添加标签',
+  'add.fromLookup': '已自动查询，确认无误后保存到词库。',
 
   // 详情
   'detail.level': '等级',

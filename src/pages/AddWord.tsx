@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Sparkles, Plus, X } from 'lucide-react'
+import { Sparkles, Plus, X, Search } from 'lucide-react'
 import gsap from 'gsap'
 import { completeWord, AIError } from '../services/ai'
 import { createWord } from '../services/words'
@@ -34,17 +34,24 @@ export default function AddWord() {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // 从阅读页 / 外刊精读页划词跳转过来（?word=xxx&auto=1）：自动查询 + 一条提示
+  const [fromLookup, setFromLookup] = useState(false)
 
   const resultRef = useRef<HTMLDivElement>(null)
+  // 待自动查询的单词（放 ref 里，确保只跑一次）
+  const autoRef = useRef<string | null>(null)
 
   // 从阅读页跳转过来：?word=xxx 自动填充输入框（一次性，填充后清掉参数）
   useEffect(() => {
     const q = searchParams.get('word')
-    if (q) {
-      setWord(q)
-      setSearchParams({}, { replace: true })
+    if (!q) return
+    setWord(q)
+    if (searchParams.get('auto') === '1' && apiKey) {
+      autoRef.current = q
+      setFromLookup(true)
     }
-  }, [searchParams, setSearchParams])
+    setSearchParams({}, { replace: true })
+  }, [searchParams, setSearchParams, apiKey])
 
   // 加载单词本（首次自动建默认本）
   useEffect(() => {
@@ -71,8 +78,10 @@ export default function AddWord() {
     }
   }, [aiResult])
 
-  const handleFetch = async () => {
-    const w = word.trim()
+  const handleFetch = () => fetchInfo(word)
+
+  const fetchInfo = async (raw: string) => {
+    const w = raw.trim()
     if (!w) return
     setLoading(true)
     setError(null)
@@ -86,6 +95,15 @@ export default function AddWord() {
       setLoading(false)
     }
   }
+
+  // auto=1：等单词本（决定目标语言）就绪后自动查一次，只跑一次
+  useEffect(() => {
+    if (!autoRef.current || !apiKey || !bookId) return
+    const w = autoRef.current
+    autoRef.current = null
+    void fetchInfo(w)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKey, bookId, bookLang])
 
   const handleSave = async () => {
     const w = word.trim()
@@ -134,6 +152,16 @@ export default function AddWord() {
             >
               Settings
             </button>
+          </p>
+        </Card>
+      )}
+
+      {/* 划词跳转过来：告知已自动查询 */}
+      {fromLookup && apiKey && (
+        <Card className="border-duo/30 bg-duo/5">
+          <p className="flex items-center gap-2 text-sm font-bold text-ink">
+            <Search size={15} className="shrink-0 text-duo" />
+            {t('add.fromLookup')}
           </p>
         </Card>
       )}

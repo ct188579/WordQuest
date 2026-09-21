@@ -84,7 +84,7 @@ export default function Dashboard() {
 
       {/* 阅读入口：渐变大横幅 */}
       <Link to="/read">
-        <div className="relative flex items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-duo to-duo-blue p-5 shadow-[0_4px_0_rgb(0_0_0/0.15)] transition-transform hover:-translate-y-0.5 active:translate-y-0.5">
+        <div className="relative flex items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-duo to-duo-blue p-5 shadow-card transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lift">
           {/* 装饰圆点 */}
           <span className="pointer-events-none absolute -right-6 -top-8 h-28 w-28 rounded-full bg-white/10" />
           <span className="pointer-events-none absolute -bottom-10 right-10 h-20 w-20 rounded-full bg-white/10" />

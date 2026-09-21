@@ -4,21 +4,26 @@ import gsap from 'gsap'
 import { cn } from '../../lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-2xl font-extrabold uppercase tracking-wide transition-colors disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
+  'inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-normal transition-all duration-200 ease-out disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
   {
     variants: {
       variant: {
-        primary: 'bg-duo text-white hover:bg-duo-light shadow-[0_4px_0_#46A302] active:shadow-none active:translate-y-1',
-        secondary: 'bg-duo-blue text-white hover:brightness-105 shadow-[0_4px_0_#1899D6] active:shadow-none active:translate-y-1',
-        danger: 'bg-duo-red text-white hover:brightness-105 shadow-[0_4px_0_#EA2B2B] active:shadow-none active:translate-y-1',
-        warning: 'bg-duo-yellow text-ink hover:brightness-105 shadow-[0_4px_0_#E0A800] active:shadow-none active:translate-y-1',
-        outline: 'bg-white text-duo-blue border-2 border-gray-200 border-b-4 hover:bg-gray-50 active:border-b-2 active:translate-y-0.5',
-        ghost: 'bg-transparent text-ink-soft hover:bg-gray-100',
+        primary:
+          'bg-duo text-white shadow-btn hover:bg-duo-light hover:-translate-y-px hover:shadow-card active:translate-y-0 active:shadow-none',
+        secondary:
+          'bg-duo-blue text-white shadow-btn hover:bg-duo-blue-dark hover:-translate-y-px hover:shadow-card active:translate-y-0 active:shadow-none',
+        danger:
+          'bg-duo-red text-white shadow-btn hover:bg-duo-red-dark hover:-translate-y-px hover:shadow-card active:translate-y-0 active:shadow-none',
+        warning:
+          'bg-duo-yellow text-ink shadow-btn hover:brightness-105 hover:-translate-y-px hover:shadow-card active:translate-y-0 active:shadow-none',
+        outline:
+          'border border-gray-300 bg-white text-duo-blue-dark hover:border-duo-blue/40 hover:bg-duo-blue/5 hover:-translate-y-px active:translate-y-0',
+        ghost: 'bg-transparent text-ink-soft hover:bg-gray-100 hover:text-ink',
       },
       size: {
         sm: 'h-9 px-4 text-xs',
-        md: 'h-12 px-6 text-sm',
-        lg: 'h-14 px-8 text-base',
+        md: 'h-11 px-5 text-sm',
+        lg: 'h-13 px-7 text-base',
         icon: 'h-10 w-10',
       },
     },
@@ -30,7 +35,7 @@ export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {}
 
-/** Duolingo 风格按钮：点击时 GSAP 弹性缩放反馈 */
+/** 学术风按钮：柔和浮起 + GSAP 轻微弹性反馈 */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, onClick, children, ...props }, ref) => {
     const innerRef = useRef<HTMLButtonElement | null>(null)
@@ -40,8 +45,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       if (el && !props.disabled) {
         gsap.fromTo(
           el,
-          { scale: 0.94 },
-          { scale: 1, duration: 0.4, ease: 'elastic.out(1.2, 0.4)', overwrite: 'auto' },
+          { scale: 0.96 },
+          { scale: 1, duration: 0.35, ease: 'elastic.out(1.2, 0.5)', overwrite: 'auto' },
         )
       }
       onClick?.(e)

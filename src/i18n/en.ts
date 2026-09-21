@@ -69,6 +69,48 @@ export default {
   'read.resume': 'Resume',
   'read.stop': 'Stop',
 
+  // 阅读 Tab 分页
+  'read.tabAi': 'AI Reading',
+  'read.tabPress': 'Press Close Reading',
+
+  // 外刊精读
+
+  // 真实外刊抓取
+  'press.modeLive': 'Real articles',
+  'press.modeAi': 'AI pastiche',
+  'press.pickFeed': 'Pick a publication',
+  'press.fetch': 'Fetch latest articles',
+  'press.fetching': 'Fetching recent articles…',
+  'press.noArticles': 'No articles found — try another publication or time range.',
+  'press.readThis': 'Read this',
+  'press.orPaste': 'Or paste any article link',
+  'press.urlPh': 'Paste a press article URL',
+  'press.urlHint': 'Any publication works; hard paywalls (e.g. The Economist) may block the body text.',
+  'press.extracting': 'Fetching the article',
+  'press.annotating': 'Picking vocabulary and translating',
+  'press.wallBlocked': 'Could not get the article body (likely a paywall). Try another one, or switch to AI pastiche.',
+  'press.openOriginal': 'View original',
+  'press.liveDisclaimer': 'Original from {host} — stored locally only, for personal study.',
+  'press.failed': 'Something went wrong. Try again.',
+  'press.chooseSource': 'Choose a publication',
+  'press.topicPh': 'Topic (optional)',
+  'press.topicHint': 'Leave it empty and the AI will pick a fitting topic for this publication.',
+  'press.generate': 'Start reading',
+  'press.generating': 'Writing in the style of {source}…',
+  'press.disclaimer': 'AI-generated pastiche in the style of the publication, for study only.',
+  'press.another': 'Another piece',
+  'press.showTrans': 'Translation',
+  'press.hideTrans': 'Hide',
+  'press.speakPara': 'Read aloud',
+  'press.vocab': 'Key vocabulary',
+  'press.addToWords': 'Save',
+
+  // Word selection lookup (select a word → look it up / search the library)
+  'press.selectHint': 'Select any word to look it up or search your library',
+  'press.lookupWord': 'Look it up',
+  'press.lookupPhrase': 'Look up phrase',
+  'press.searchLibrary': 'My library',
+
   // 话题推荐 + 联网搜最新资料
   'read.suggestTitle': 'Today’s topic ideas',
   'read.suggestRefresh': 'More ideas',
@@ -167,6 +209,7 @@ export default {
   'add.roots': 'Word breakdown',
   'add.tags': 'Tags (optional)',
   'add.tagPlaceholder': 'Add tag',
+  'add.fromLookup': 'Looked up automatically — save it once you are happy.',
 
   // 详情
   'detail.level': 'Level',

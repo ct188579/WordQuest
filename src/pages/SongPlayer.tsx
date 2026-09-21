@@ -271,7 +271,7 @@ export default function SongPlayer() {
           <span className="pl-2 text-sm font-black text-ink">{lookup.text}</span>
           <button
             onClick={goAdd}
-            className="flex cursor-pointer items-center gap-1 rounded-xl bg-duo px-3 py-1.5 text-xs font-extrabold text-white shadow-[0_2px_0_#46A302]"
+            className="flex cursor-pointer items-center gap-1 rounded-lg bg-duo px-3 py-1.5 text-xs font-semibold text-white shadow-btn transition-colors duration-200 hover:bg-duo-light"
           >
             <Search size={12} /> {t('song.lookupGo')}
           </button>
@@ -311,7 +311,7 @@ export default function SongPlayer() {
         </button>
         <button
           onClick={togglePlay}
-          className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-duo text-white shadow-[0_5px_0_#46A302] transition-transform hover:-translate-y-0.5 active:translate-y-0.5"
+          className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-duo text-white shadow-lift transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-duo-light active:translate-y-0"
           aria-label="play/pause"
         >
           {playing ? <Pause size={26} fill="currentColor" /> : <Play size={26} fill="currentColor" className="ml-1" />}

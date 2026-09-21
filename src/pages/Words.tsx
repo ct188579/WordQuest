@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Search, Plus, Trash2 } from 'lucide-react'
 import gsap from 'gsap'
 import { fetchAllTags, fetchWordsPage, type WordFilter } from '../services/words'
@@ -29,22 +29,27 @@ const MASTERY_TABS = [
   { key: 'mastered', labelKey: 'words.fMastered' },
 ] as const
 
-// 每页条数：按屏幕高度估算（卡片约 112px + 顶部固定区域约 330px）
-const itemHeight = () => computePageSize(112, 330)
+// 网格卡片：每页条数 = 可见行数 × 列数（内容区约 704px，lg 以上放 3 列）
+const gridCols = () => (typeof window !== 'undefined' && window.innerWidth >= 1024 ? 3 : 2)
+const itemHeight = (cols: number) => computePageSize(134, 350, cols)
 
 export default function Words() {
   const t = useT()
+  const [searchParams, setSearchParams] = useSearchParams()
+  // /words?q=word 直达（从外刊精读页划词跳转过来时用）
+  const qParam = searchParams.get('q') ?? ''
   const [words, setWords] = useState<Word[]>([])
   const [books, setBooks] = useState<BookWithCount[]>([])
   const [activeBookId, setActiveBookId] = useState<string | null>(null) // null = 全部单词本
   const [tags, setTags] = useState<string[]>([])
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(qParam)
   const [tag, setTag] = useState<string | null>(null)
   const [mastery, setMastery] = useState<WordFilter['mastery']>('all')
   const [sort, setSort] = useState<WordFilter['sort']>('newest')
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(itemHeight)
+  const [cols, setCols] = useState(gridCols)
+  const [pageSize, setPageSize] = useState(() => itemHeight(gridCols()))
   const [total, setTotal] = useState(0)
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -54,6 +59,17 @@ export default function Words() {
   const [newBookLang, setNewBookLang] = useState('en')
 
   const loadBooks = () => fetchBooks().then(setBooks).catch(console.error)
+
+  // 页面已在词库页时再次带 ?q= 跳转（组件不重新挂载）也要同步搜索框
+  useEffect(() => {
+    if (qParam) setSearch(qParam)
+  }, [qParam])
+
+  /** 用户手动改搜索词：顺手把 URL 上的 q 清掉（replace，不污染历史记录） */
+  const changeSearch = (v: string) => {
+    setSearch(v)
+    if (searchParams.get('q')) setSearchParams({}, { replace: true })
+  }
 
   useEffect(() => {
     // 首次进入：确保有默认单词本并迁移孤儿单词，再加载
@@ -98,8 +114,8 @@ export default function Words() {
     if (loading || !listRef.current) return
     gsap.fromTo(
       listRef.current.children,
-      { opacity: 0, x: -16 },
-      { opacity: 1, x: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out' },
+      { opacity: 0, y: 14, scale: 0.97 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.32, stagger: 0.035, ease: 'power2.out' },
     )
   }, [loading, words])
 
@@ -117,17 +133,36 @@ export default function Words() {
   }
 
   const masteryBadge = (w: Word) => {
-    if (w.mastery_level >= 5) return <Badge variant="green">{t('words.fMastered')}</Badge>
-    if (w.mastery_level >= 1) return <Badge variant="yellow">Lv.{w.mastery_level}</Badge>
-    return <Badge variant="gray">{t('words.fNew')}</Badge>
+    const cls = 'px-2 py-0.5 text-[10px]'
+    if (w.mastery_level >= 5)
+      return (
+        <Badge variant="green" className={cls}>
+          {t('words.fMastered')}
+        </Badge>
+      )
+    if (w.mastery_level >= 1)
+      return (
+        <Badge variant="yellow" className={cls}>
+          Lv.{w.mastery_level}
+        </Badge>
+      )
+    return (
+      <Badge variant="gray" className={cls}>
+        {t('words.fNew')}
+      </Badge>
+    )
   }
 
-  // 每页条数随屏幕尺寸变化（150ms 防抖），变化时回到第 1 页
+  // 列数 / 每页条数随屏幕尺寸变化（150ms 防抖），变化时回到第 1 页
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>
     const onResize = () => {
       clearTimeout(timer)
-      timer = setTimeout(() => setPageSize(itemHeight()), 150)
+      timer = setTimeout(() => {
+        const c = gridCols()
+        setCols(c)
+        setPageSize(itemHeight(c))
+      }, 150)
     }
     window.addEventListener('resize', onResize)
     return () => {
@@ -138,7 +173,9 @@ export default function Words() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-black text-ink">{t('words.title')}</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
+        {t('words.title')}
+      </h1>
 
       <div className="relative">
         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -146,7 +183,7 @@ export default function Words() {
           className="pl-11"
           placeholder={t('words.search')}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => changeSearch(e.target.value)}
         />
       </div>
 
@@ -182,10 +219,10 @@ export default function Words() {
               key={tab.key}
               onClick={() => setMastery(tab.key)}
               className={cn(
-                'rounded-full px-3 py-1.5 text-xs font-extrabold uppercase cursor-pointer transition-colors',
+                'cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors duration-200',
                 mastery === tab.key
-                  ? 'bg-duo text-white'
-                  : 'bg-gray-100 text-ink-soft hover:bg-gray-200',
+                  ? 'bg-duo text-white shadow-btn'
+                  : 'bg-gray-100 text-ink-soft hover:bg-gray-200 hover:text-ink',
               )}
             >
               {t(tab.labelKey)}
@@ -195,7 +232,7 @@ export default function Words() {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as WordFilter['sort'])}
-          className="rounded-xl border-2 border-gray-200 bg-white px-2 py-1.5 text-xs font-bold text-ink-soft outline-none"
+          className="cursor-pointer rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-ink-soft outline-none transition-colors duration-200 hover:border-gray-300 focus:border-duo"
         >
           <option value="newest">{t('words.sNewest')}</option>
           <option value="oldest">{t('words.sOldest')}</option>
@@ -222,25 +259,34 @@ export default function Words() {
       )}
 
       {loading ? (
-        <p className="py-10 text-center font-bold text-ink-soft">{t('common.loading')}</p>
+        <p className="py-10 text-center font-medium text-ink-soft">{t('common.loading')}</p>
       ) : words.length === 0 ? (
-        <p className="py-10 text-center font-bold text-ink-soft">{t('words.empty')}</p>
+        <p className="py-10 text-center font-medium text-ink-soft">{t('words.empty')}</p>
       ) : (
-        <div ref={listRef} className="flex flex-col gap-2.5">
+        <div
+          ref={listRef}
+          className={cn('grid gap-2.5', cols === 3 ? 'grid-cols-3' : 'grid-cols-2')}
+        >
           {words.map((w) => (
-            <Link key={w.id} to={`/words/${w.id}`}>
-              <Card className="flex items-center justify-between gap-3 p-4 transition-colors hover:border-duo-blue">
-                <div className="min-w-0">
-                  <div className="flex items-baseline gap-2">
-                    <span className="truncate text-lg font-black text-ink">{w.word}</span>
-                    <span className="shrink-0 text-xs font-bold text-ink-soft">{w.phonetic}</span>
-                  </div>
-                  <p className="truncate text-sm font-semibold text-ink-soft">{w.meaning_cn}</p>
-                  <p className="mt-0.5 text-xs font-bold text-duo-blue-dark">
-                    {t('words.next')} {describeNextReview(w.next_review_at)}
-                  </p>
+            <Link key={w.id} to={`/words/${w.id}`} className="block">
+              <Card className="flex h-full flex-col gap-1 p-3.5 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-duo/40 hover:shadow-lift">
+                <div className="flex items-start justify-between gap-1.5">
+                  <span className="truncate font-display text-[17px] font-semibold leading-tight text-ink">
+                    {w.word}
+                  </span>
+                  <span className="shrink-0">{masteryBadge(w)}</span>
                 </div>
-                {masteryBadge(w)}
+                {w.phonetic && (
+                  <span className="truncate text-[11px] font-medium text-gray-400">
+                    {w.phonetic}
+                  </span>
+                )}
+                <p className="line-clamp-2 text-[13px] font-medium leading-snug text-ink-soft">
+                  {w.meaning_cn}
+                </p>
+                <p className="mt-auto pt-1 text-[11px] font-medium text-duo-blue-dark">
+                  {t('words.next')} {describeNextReview(w.next_review_at)}
+                </p>
               </Card>
             </Link>
           ))}
@@ -255,7 +301,7 @@ export default function Words() {
             totalPages={Math.max(1, Math.ceil(total / pageSize))}
             onGoTo={fetchPage}
           />
-          <p className="pb-1 text-center text-xs font-bold text-gray-400">
+          <p className="pb-1 text-center text-xs font-medium text-gray-400">
             {total} {t('words.allShown')}
           </p>
         </>

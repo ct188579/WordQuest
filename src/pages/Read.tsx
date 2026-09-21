@@ -23,6 +23,7 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Card } from '../components/ui/card'
 import { AILoading } from '../components/AILoading'
+import PressReading from '../components/PressReading'
 import { sanitizeWord } from '../lib/text'
 import { cn } from '../lib/utils'
 
@@ -58,6 +59,8 @@ export default function Read() {
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [popover, setPopover] = useState<Popover | null>(null)
+  // 阅读 Tab：'ai' = AI 生成阅读（原有功能），'press' = 外刊精读
+  const [tab, setTab] = useState<'ai' | 'press'>('ai')
   // 朗读状态：voiceIdx 为当前正在读的段落下标（-1 = 未播放）
   const [voiceIdx, setVoiceIdx] = useState(-1)
   const [paused, setPaused] = useState(false)
@@ -160,10 +163,10 @@ export default function Read() {
   // 进入页面 / 切换文章语言 / 修改兴趣方向 时拉取推荐（命中缓存则不重复请求）
   // 已有文章时不打扰：等用户点「新文章」再推荐
   useEffect(() => {
-    if (content) return
+    if (content || tab !== 'ai') return
     loadSuggestions(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interests, articleLang, content])
+  }, [interests, articleLang, content, tab])
 
   // ---------- 生成文章（可选先联网检索） ----------
   const generate = async (rawTopic: string) => {
@@ -259,7 +262,7 @@ export default function Read() {
 
   const lookUp = () => {
     if (!popover) return
-    navigate(`/add?word=${encodeURIComponent(popover.text)}`)
+    navigate(`/add?word=${encodeURIComponent(popover.text)}&auto=1`)
     setPopover(null)
   }
 
@@ -275,7 +278,30 @@ export default function Read() {
         <p className="font-bold text-ink-soft">{t('read.subtitle')}</p>
       </header>
 
-      {/* 生成表单（无文章时显示） */}
+      {/* Tab 分页：AI 生成阅读 / 外刊精读 */}
+      <div className="flex gap-1 rounded-2xl bg-gray-100 p-1">
+        {(['ai', 'press'] as const).map((k) => (
+          <button
+            key={k}
+            onClick={() => {
+              if (tab === k) return
+              stopReading()
+              setPopover(null)
+              setTab(k)
+            }}
+            className={cn(
+              'flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-bold transition-all duration-200',
+              tab === k ? 'bg-white text-ink shadow-card' : 'text-ink-soft hover:text-ink',
+            )}
+          >
+            {k === 'ai' ? t('read.tabAi') : t('read.tabPress')}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'ai' && (
+        <>
+          {/* 生成表单（无文章时显示） */}
       {!content && (
         <div className="flex flex-col gap-3">
           <div className="flex gap-2">
@@ -559,7 +585,7 @@ export default function Read() {
           <span className="pl-2 text-sm font-black text-ink">{popover.text}</span>
           <button
             onClick={lookUp}
-            className="flex cursor-pointer items-center gap-1 rounded-xl bg-duo px-3 py-1.5 text-xs font-extrabold text-white shadow-[0_2px_0_#46A302]"
+            className="flex cursor-pointer items-center gap-1 rounded-lg bg-duo px-3 py-1.5 text-xs font-semibold text-white shadow-btn transition-colors duration-200 hover:bg-duo-light"
           >
             <Search size={12} /> {t('read.lookup')}
           </button>
@@ -572,6 +598,10 @@ export default function Read() {
           </button>
         </div>
       )}
+        </>
+      )}
+
+      {tab === 'press' && <PressReading />}
     </div>
   )
 }

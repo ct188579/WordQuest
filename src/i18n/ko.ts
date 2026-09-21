@@ -68,6 +68,48 @@ export default {
   'read.resume': '계속',
   'read.stop': '정지',
 
+  // 阅读 Tab 分页
+  'read.tabAi': 'AI 읽기',
+  'read.tabPress': '외신 정독',
+
+  // 外刊精读
+
+  // 真实外刊抓取
+  'press.modeLive': '실제 외신',
+  'press.modeAi': 'AI 모사',
+  'press.pickFeed': '간행물 선택',
+  'press.fetch': '최신 기사 가져오기',
+  'press.fetching': '최근 기사를 가져오는 중…',
+  'press.noArticles': '기사를 찾지 못했습니다. 다른 간행물이나 기간을 시도해 보세요.',
+  'press.readThis': '이 기사 정독',
+  'press.orPaste': '또는 기사 링크 붙여넣기',
+  'press.urlPh': '외신 기사 링크 붙여넣기',
+  'press.urlHint': '어떤 간행물이든 가능하지만 유료 장벽이 있으면 본문을 못 가져올 수 있습니다.',
+  'press.extracting': '원문을 가져오는 중',
+  'press.annotating': 'AI가 어휘를 고르고 번역하는 중',
+  'press.wallBlocked': '본문을 가져오지 못했습니다(유료 장벽 가능성). 다른 기사를 고르거나 AI 모사로 전환하세요.',
+  'press.openOriginal': '원문 보기',
+  'press.liveDisclaimer': '원문 출처 {host} · 브라우저에만 저장되며 개인 학습용입니다.',
+  'press.failed': '오류가 발생했습니다. 다시 시도하세요.',
+  'press.chooseSource': '간행물 선택',
+  'press.topicPh': '주제 (선택)',
+  'press.topicHint': '비워 두면 AI가 이 간행물에 맞는 주제를 직접 고릅니다.',
+  'press.generate': '정독 시작',
+  'press.generating': 'AI가 {source} 스타일로 작성 중…',
+  'press.disclaimer': 'AI가 해당 간행물 스타일로 작성한 학습용 글입니다.',
+  'press.another': '다른 글',
+  'press.showTrans': '번역',
+  'press.hideTrans': '접기',
+  'press.speakPara': '이 문단 읽기',
+  'press.vocab': '핵심 어휘',
+  'press.addToWords': '단어장에 저장',
+
+  // 단어 선택 조회
+  'press.selectHint': '단어를 선택하면 바로 조회하거나 단어장에서 검색할 수 있어요',
+  'press.lookupWord': '이 단어 조회',
+  'press.lookupPhrase': '이 구문 조회',
+  'press.searchLibrary': '단어장 검색',
+
   // 话题推荐 + 联网搜最新资料
   'read.suggestTitle': '오늘은 뭘 읽을까',
   'read.suggestRefresh': '더 보기',
@@ -166,6 +208,7 @@ export default {
   'add.roots': '단어 분석',
   'add.tags': '태그 (선택)',
   'add.tagPlaceholder': '태그 추가',
+  'add.fromLookup': '자동으로 조회했어요. 확인 후 단어장에 저장하세요.',
 
   // 详情
   'detail.level': '레벨',

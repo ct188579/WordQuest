@@ -24,10 +24,10 @@ export function Progress({ value, className, barClassName }: ProgressProps) {
   }, [value])
 
   return (
-    <div className={cn('h-4 w-full overflow-hidden rounded-full bg-gray-200', className)}>
+    <div className={cn('h-2.5 w-full overflow-hidden rounded-full bg-gray-100', className)}>
       <div
         ref={barRef}
-        className={cn('h-full rounded-full bg-duo', barClassName)}
+        className={cn('h-full rounded-full bg-gradient-to-r from-duo-dark to-duo', barClassName)}
         style={{ width: 0 }}
       />
     </div>

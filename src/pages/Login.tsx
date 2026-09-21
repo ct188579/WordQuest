@@ -44,17 +44,17 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-sm flex-col items-center justify-center gap-6 bg-white px-6">
+    <div className="mx-auto flex min-h-dvh max-w-sm flex-col items-center justify-center gap-6 px-6">
       <div className="flex flex-col items-center gap-3">
-        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-duo shadow-[0_6px_0_#46A302]">
-          <BookOpen size={40} className="text-white" strokeWidth={2.5} />
+        <div className="flex h-18 w-18 items-center justify-center rounded-2xl bg-duo shadow-lift">
+          <BookOpen size={34} className="text-white" strokeWidth={2.2} />
         </div>
-        <h1 className="text-3xl font-black text-duo">WordQuest</h1>
-        <p className="font-bold text-ink-soft">{t('login.tagline')}</p>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">WordQuest</h1>
+        <p className="font-medium text-ink-soft">{t('login.tagline')}</p>
       </div>
 
       {!isSupabaseConfigured && (
-        <p className="w-full rounded-2xl bg-duo-red/10 p-3 text-sm font-bold text-duo-red">
+        <p className="w-full rounded-xl bg-duo-red/10 p-3 text-sm font-medium text-duo-red">
           {t('login.notConfigured')}
         </p>
       )}
@@ -63,15 +63,15 @@ export default function Login() {
       <button
         onClick={handleGoogle}
         disabled={busy || !isSupabaseConfigured}
-        className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl border-2 border-gray-200 bg-white px-6 py-4 text-base font-extrabold text-ink transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-[15px] font-semibold text-ink shadow-card transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-60"
       >
         <GoogleIcon />
         {busy ? t('login.googleBusy') : t('login.google')}
       </button>
-      <p className="-mt-3 text-xs font-bold text-gray-400">{t('login.onlyOwner')}</p>
+      <p className="-mt-3 text-xs font-medium text-gray-400">{t('login.onlyOwner')}</p>
 
       {error && (
-        <p className="w-full rounded-2xl bg-duo-red/10 p-3 text-sm font-bold text-duo-red">
+        <p className="w-full rounded-xl bg-duo-red/10 p-3 text-sm font-medium text-duo-red">
           {error}
         </p>
       )}

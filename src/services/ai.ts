@@ -318,6 +318,136 @@ Return JSON: {"title": "...", "content": "paragraph1\\n\\nparagraph2\\n\\n..."}`
 }
 
 // ------------------------------------------------------------
+// 7. 外刊精读：仿指定刊物风格生成文章（含逐段翻译 + 核心词汇表）
+// ------------------------------------------------------------
+
+export interface GeneratedPressArticle {
+  title: string
+  paragraphs: string[]
+  translations: string[]
+  vocabulary: { word: string; pos: string; meaning: string }[]
+}
+
+export async function generatePressArticle(
+  /** 仿写的刊物名，如 The Economist */
+  source: string,
+  /** 主题；为空则 AI 自选一个适合该刊物的话题 */
+  topic: string | null,
+  uiLang: string = getUILanguage(),
+): Promise<GeneratedPressArticle> {
+  const ul = langName(uiLang)
+  const topicLine = topic
+    ? `Topic: "${topic}".`
+    : `Pick a timely, intellectually engaging topic yourself that fits ${source}.`
+
+  return chatJSON<
+    { title?: string; paragraphs?: string[]; translations?: string[]; vocabulary?: unknown },
+    GeneratedPressArticle
+  >(
+    JSON_ONLY,
+    `You are a senior editor at ${source}. Write one authentic-style English article for a language learner doing close reading (精读). ${topicLine}
+Requirements:
+- Voice, register, sentence structure and rhetorical habits must genuinely resemble ${source} (its typical openings, transitions, hedging and wit where appropriate).
+- 6-8 paragraphs, each 60-100 words, total 500-700 words. No subheadings, no bullet points.
+- Difficulty: challenging but readable — the way ${source} actually reads.
+- "translations": a faithful, fluent ${ul} translation of EACH paragraph, same order and same length as "paragraphs".
+- "vocabulary": exactly 10 words or phrases from the article that are advanced but worth learning. For each: "word" (lemma or phrase as it appears), "pos" (part of speech, e.g. n. / v. / adj. / phr.), "meaning" (concise gloss in ${ul}). Do NOT include basic words.
+Return JSON: {"title": "...", "paragraphs": ["para1", "para2", ...], "translations": ["trans1", "trans2", ...], "vocabulary": [{"word": "...", "pos": "...", "meaning": "..."}, ...]}`,
+    (p) => ({
+      title: p.title ?? (topic ?? source),
+      paragraphs: Array.isArray(p.paragraphs) ? p.paragraphs.filter(Boolean) : [],
+      translations: Array.isArray(p.translations) ? p.translations.filter(Boolean) : [],
+      vocabulary: Array.isArray(p.vocabulary)
+        ? (p.vocabulary as { word?: string; pos?: string; meaning?: string }[])
+            .filter((v) => v && typeof v.word === 'string' && v.word.trim())
+            .map((v) => ({
+              word: v.word!.trim(),
+              pos: typeof v.pos === 'string' ? v.pos.trim() : '',
+              meaning: typeof v.meaning === 'string' ? v.meaning.trim() : '',
+            }))
+        : [],
+    }),
+    (p) =>
+      Boolean(p.title) &&
+      Array.isArray(p.paragraphs) &&
+      p.paragraphs.length >= 3 &&
+      Array.isArray(p.translations) &&
+      p.translations.length >= 3,
+  )
+}
+
+// ------------------------------------------------------------
+// 7b. 外刊精读（真实外刊）：标注真实文章
+//
+// 关键约束：AI 只返回「保留哪些段的索引」+ 译文 + 词汇，
+// 段落正文始终用抽取到的原文，一个字都不改写 —— 真实外刊必须是原文。
+// ------------------------------------------------------------
+
+export interface AnnotatedPress {
+  paragraphs: string[]
+  translations: string[]
+  vocabulary: { word: string; pos: string; meaning: string }[]
+}
+
+export async function annotatePressArticle(
+  /** 抽取并清洗后的候选段落（来自 splitArticleParagraphs） */
+  candidates: string[],
+  meta: { title: string; source: string },
+  uiLang: string = getUILanguage(),
+): Promise<AnnotatedPress> {
+  const ul = langName(uiLang)
+  const list = candidates.map((p, i) => `[${i}] ${p.slice(0, 1500)}`).join('\n\n')
+
+  return chatJSON<
+    { keep?: number[]; translations?: string[]; vocabulary?: unknown },
+    AnnotatedPress
+  >(
+    JSON_ONLY,
+    `Below are paragraphs extracted from a real English article, "${meta.title}", published by ${meta.source}.
+Some of them are NOT article body — navigation menus, cookie notices, ads, image captions, author bios, related-article teasers, comment sections. The rest are the article body.
+
+Task: identify the body paragraphs and translate them.
+
+Rules:
+- "keep": indices (0-based, into the numbered list below) of the paragraphs that belong to the article body, in their original order.
+- Drop ONLY non-body junk. Keep EVERY body paragraph — never merge, split, or omit any paragraph of the actual article.
+- NEVER rewrite, shorten or paraphrase: you never output the paragraph text itself, only its index.
+- "translations": a faithful, fluent ${ul} translation for EACH kept paragraph, in the same order and exactly the same count as "keep".
+- "vocabulary": exactly 10 advanced-but-useful words or phrases that genuinely appear in the kept paragraphs. For each: "word" (as it appears in the article), "pos" (part of speech, e.g. n. / v. / adj. / phr.), "meaning" (concise gloss in ${ul}). Do not pick basic words.
+Return JSON: {"keep": [0, 2, 3, ...], "translations": ["trans1", "trans2", ...], "vocabulary": [{"word": "...", "pos": "...", "meaning": "..."}, ...]}
+
+Paragraphs:
+${list}`,
+    (p) => {
+      const keep = Array.isArray(p.keep)
+        ? (p.keep as unknown[]).filter(
+            (n): n is number => typeof n === 'number' && n >= 0 && n < candidates.length,
+          )
+        : []
+      const trans = Array.isArray(p.translations) ? (p.translations as unknown[]) : []
+      return {
+        paragraphs: keep.map((i) => candidates[i]),
+        translations: keep.map((_, k) => (typeof trans[k] === 'string' ? (trans[k] as string) : '')),
+        vocabulary: Array.isArray(p.vocabulary)
+          ? (p.vocabulary as { word?: string; pos?: string; meaning?: string }[])
+              .filter((v) => v && typeof v.word === 'string' && v.word.trim())
+              .map((v) => ({
+                word: v.word!.trim(),
+                pos: typeof v.pos === 'string' ? v.pos.trim() : '',
+                meaning: typeof v.meaning === 'string' ? v.meaning.trim() : '',
+              }))
+          : [],
+      }
+    },
+    (p) =>
+      Array.isArray(p.keep) &&
+      p.keep.length >= 3 &&
+      Array.isArray(p.translations) &&
+      p.translations.length >= 3,
+  )
+}
+
+// ------------------------------------------------------------
 // 8. 阅读：根据兴趣方向推荐话题（用户可能还没想好看什么）
 // ------------------------------------------------------------
 

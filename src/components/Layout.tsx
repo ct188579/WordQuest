@@ -45,22 +45,22 @@ export function Layout() {
   }, [])
 
   return (
-    <div className="flex min-h-dvh bg-white">
+    <div className="flex min-h-dvh">
       {/* ============ 桌面端侧边栏（md+） ============ */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r-2 border-gray-200 bg-white px-4 py-6 md:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-gray-200 bg-[#FBFAF6] px-4 py-6 md:flex">
         {/* Logo */}
         <button
           onClick={() => navigate('/')}
-          className="mb-8 flex cursor-pointer items-center gap-3 px-2"
+          className="mb-8 flex cursor-pointer items-center gap-3 px-2 transition-opacity duration-200 hover:opacity-80"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-duo shadow-[0_4px_0_#46A302]">
-            <BookOpen size={24} className="text-white" strokeWidth={2.5} />
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-duo shadow-btn">
+            <BookOpen size={20} className="text-white" strokeWidth={2.2} />
           </span>
-          <span className="text-xl font-black text-duo">WordQuest</span>
+          <span className="font-display text-xl font-semibold tracking-tight text-ink">WordQuest</span>
         </button>
 
         {/* 导航 */}
-        <nav className="flex flex-col gap-1.5">
+        <nav className="flex flex-col gap-1">
           {NAV_ITEMS.map(({ to, icon: Icon, labelKey, end }) => (
             <NavLink
               key={to}
@@ -68,14 +68,14 @@ export function Layout() {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition-colors',
+                  'flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ease-out',
                   isActive
-                    ? 'bg-duo/10 text-duo'
-                    : 'text-gray-400 hover:bg-gray-50 hover:text-ink-soft',
+                    ? 'bg-duo/10 font-semibold text-duo-dark'
+                    : 'text-ink-soft hover:bg-gray-100 hover:text-ink',
                 )
               }
             >
-              <Icon size={22} strokeWidth={2.5} />
+              <Icon size={20} strokeWidth={2.2} />
               {t(labelKey)}
             </NavLink>
           ))}
@@ -84,25 +84,25 @@ export function Layout() {
         {/* 添加单词 CTA */}
         <button
           onClick={() => navigate('/add')}
-          className="mt-6 flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-duo px-4 py-3.5 text-base font-extrabold text-white shadow-[0_4px_0_#46A302] transition-transform hover:-translate-y-0.5"
+          className="mt-6 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-duo px-4 py-3 text-sm font-semibold text-white shadow-btn transition-all duration-200 ease-out hover:-translate-y-px hover:bg-duo-light hover:shadow-card active:translate-y-0"
         >
-          <Plus size={20} strokeWidth={3} /> {t('nav.addWord')}
+          <Plus size={18} strokeWidth={2.5} /> {t('nav.addWord')}
         </button>
 
         {/* 底部：打卡 + 账号 */}
-        <div className="mt-auto flex flex-col gap-4">
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl bg-orange-50 px-4 py-3">
-            <Flame size={20} className="text-orange-500" fill="currentColor" />
-            <span className="text-sm font-black text-orange-500">
+        <div className="mt-auto flex flex-col gap-3">
+          <div className="flex items-center justify-center gap-1.5 rounded-xl border border-duo-yellow/20 bg-duo-yellow/10 px-4 py-2.5">
+            <Flame size={18} className="text-duo-yellow-dark" fill="currentColor" />
+            <span className="text-sm font-semibold text-duo-yellow-dark">
               <AnimatedNumber value={streak} /> {t('layout.dayStreak')}
             </span>
           </div>
           {email && (
-            <div className="flex items-center gap-3 rounded-2xl bg-gray-50 px-3 py-2.5">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-duo text-base font-black text-white">
+            <div className="flex items-center gap-3 rounded-xl bg-gray-100 px-3 py-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-duo text-sm font-semibold text-white">
                 {email.charAt(0).toUpperCase()}
               </span>
-              <span className="truncate text-xs font-bold text-ink-soft">{email}</span>
+              <span className="truncate text-xs font-medium text-ink-soft">{email}</span>
             </div>
           )}
         </div>
@@ -116,7 +116,7 @@ export function Layout() {
       </main>
 
       {/* ============ 移动端底部导航（< md）：5 项 + 中间大号 ➕ 悬浮按钮 ============ */}
-      <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-lg -translate-x-1/2 border-t-2 border-gray-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-lg -translate-x-1/2 border-t border-gray-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
         <div className="flex items-end justify-around px-2 py-2">
           {[
             ...NAV_ITEMS.slice(0, 2), // Home / Words
@@ -129,8 +129,8 @@ export function Layout() {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1 text-[10px] font-extrabold uppercase transition-colors',
-                  isActive ? 'text-duo' : 'text-gray-400 hover:text-ink-soft',
+                  'flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-semibold transition-colors duration-200',
+                  isActive ? 'text-duo-dark' : 'text-gray-400 hover:text-ink-soft',
                 )
               }
               onClick={(e) => {
@@ -141,8 +141,8 @@ export function Layout() {
                   if (el) {
                     gsap.fromTo(
                       el,
-                      { scale: 0.85, rotation: -8 },
-                      { scale: 1, rotation: 0, duration: 0.5, ease: 'elastic.out(1.4, 0.4)' },
+                      { scale: 0.88 },
+                      { scale: 1, duration: 0.4, ease: 'elastic.out(1.2, 0.5)' },
                     )
                   }
                   navigate(to)
@@ -150,11 +150,11 @@ export function Layout() {
               }}
             >
               {big ? (
-                <span className="add-btn -mt-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-duo text-white shadow-[0_4px_0_#46A302]">
-                  <Plus size={28} strokeWidth={2.5} />
+                <span className="add-btn -mt-6 flex h-13 w-13 items-center justify-center rounded-xl bg-duo text-white shadow-lift">
+                  <Plus size={26} strokeWidth={2.2} />
                 </span>
               ) : (
-                <Icon size={24} strokeWidth={2.5} />
+                <Icon size={22} strokeWidth={2.2} />
               )}
               {big ? t('common.add') : t(labelKey)}
             </NavLink>

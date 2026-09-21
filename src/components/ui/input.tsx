@@ -6,9 +6,10 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
     <input
       ref={ref}
       className={cn(
-        'h-12 w-full rounded-2xl border-2 border-gray-200 bg-gray-50 px-4 text-base font-semibold text-ink',
-        'placeholder:font-normal placeholder:text-gray-400 outline-none transition-colors',
-        'focus:border-duo-blue focus:bg-white',
+        'h-11 w-full rounded-xl border border-gray-200 bg-white px-3.5 text-[15px] font-medium text-ink',
+        'shadow-[inset_0_1px_2px_rgb(35_40_46/0.04)] placeholder:font-normal placeholder:text-gray-400',
+        'outline-none transition-all duration-200 ease-out',
+        'focus:border-duo focus:ring-4 focus:ring-duo/10',
         className,
       )}
       {...props}
@@ -22,9 +23,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
     <textarea
       ref={ref}
       className={cn(
-        'w-full rounded-2xl border-2 border-gray-200 bg-gray-50 px-4 py-3 text-base font-semibold text-ink',
-        'placeholder:font-normal placeholder:text-gray-400 outline-none transition-colors',
-        'focus:border-duo-blue focus:bg-white min-h-24',
+        'min-h-24 w-full rounded-xl border border-gray-200 bg-white px-3.5 py-3 text-[15px] font-medium text-ink',
+        'shadow-[inset_0_1px_2px_rgb(35_40_46/0.04)] placeholder:font-normal placeholder:text-gray-400',
+        'outline-none transition-all duration-200 ease-out',
+        'focus:border-duo focus:ring-4 focus:ring-duo/10',
         className,
       )}
       {...props}

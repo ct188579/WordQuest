@@ -68,6 +68,48 @@ export default {
   'read.resume': '再開',
   'read.stop': '停止',
 
+  // 阅读 Tab 分页
+  'read.tabAi': 'AIリーディング',
+  'read.tabPress': '外誌精読',
+
+  // 外刊精读
+
+  // 真实外刊抓取
+  'press.modeLive': '本物の外誌',
+  'press.modeAi': 'AI模写',
+  'press.pickFeed': 'メディアを選ぶ',
+  'press.fetch': '最新記事を取得',
+  'press.fetching': '最近の記事を取得中…',
+  'press.noArticles': '記事が取得できませんでした。別のメディアや期間をお試しください。',
+  'press.readThis': 'この記事を精読',
+  'press.orPaste': 'または記事リンクを貼り付け',
+  'press.urlPh': '外誌記事のURLを貼り付け',
+  'press.urlHint': 'どのメディアでも可。硬いペイウォール（Economistなど）は本文を取得できない場合があります。',
+  'press.extracting': '原文を取得中',
+  'press.annotating': 'AIが語彙を選び、段落を翻訳中',
+  'press.wallBlocked': '本文を取得できませんでした（ペイウォールの可能性）。別の記事にするか、AI模写に切り替えてください。',
+  'press.openOriginal': '原文を見る',
+  'press.liveDisclaimer': '原文提供 {host}・ブラウザにのみ保存、個人学習用です。',
+  'press.failed': 'エラーが発生しました。もう一度お試しください。',
+  'press.chooseSource': 'メディアを選ぶ',
+  'press.topicPh': 'テーマ（任意）',
+  'press.topicHint': '空欄の場合、AIがこのメディアに合うテーマを選びます。',
+  'press.generate': '精読を始める',
+  'press.generating': 'AIが{source}風に執筆中…',
+  'press.disclaimer': 'AIが同メディアのスタイルで模写した学習用の記事です。',
+  'press.another': '別の記事',
+  'press.showTrans': '訳文',
+  'press.hideTrans': '閉じる',
+  'press.speakPara': 'この段落を読む',
+  'press.vocab': '核心語彙',
+  'press.addToWords': '単語帳へ保存',
+
+  // 単語選択ルックアップ
+  'press.selectHint': '単語を選択すると、すぐに調べたり単語帳で検索できます',
+  'press.lookupWord': 'この単語を調べる',
+  'press.lookupPhrase': 'このフレーズを調べる',
+  'press.searchLibrary': '単語帳で検索',
+
   // 话题推荐 + 联网搜最新资料
   'read.suggestTitle': '今日は何を読む？',
   'read.suggestRefresh': '別の候補',
@@ -166,6 +208,7 @@ export default {
   'add.roots': '語源解析',
   'add.tags': 'タグ（任意）',
   'add.tagPlaceholder': 'タグを追加',
+  'add.fromLookup': '自動で調べました。確認して単語帳へ保存しましょう。',
 
   // 详情
   'detail.level': 'レベル',

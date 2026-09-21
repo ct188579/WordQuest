@@ -1,55 +1,101 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,500&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  /* Duolingo 风格色板 */
-  --color-duo: #58cc02;
-  --color-duo-dark: #46a302;
-  --color-duo-light: #89e219;
-  --color-duo-yellow: #ffc800;
-  --color-duo-yellow-dark: #e0a800;
-  --color-duo-red: #ff4b4b;
-  --color-duo-red-dark: #ea2b2b;
-  --color-duo-blue: #1cb0f6;
-  --color-duo-blue-dark: #1899d6;
-  --color-ink: #3c3c3c;
-  --color-ink-soft: #777777;
-  --color-paper: #f7f7f7;
+  /* ============ 现代学术色板 ============ */
+  /* 主色：深林绿（学术、沉稳） */
+  --color-duo: #2f5d46;
+  --color-duo-dark: #254a38;
+  --color-duo-light: #3e7a5c;
+  /* 次色：牛津蓝 */
+  --color-duo-blue: #3d5a80;
+  --color-duo-blue-dark: #2e4664;
+  /* 点缀：哑光金 */
+  --color-duo-yellow: #c9a227;
+  --color-duo-yellow-dark: #96791a;
+  /* 警示：陶土红 */
+  --color-duo-red: #a94438;
+  --color-duo-red-dark: #8c382e;
+  /* 墨色与纸色 */
+  --color-ink: #23282e;
+  --color-ink-soft: #69706a;
+  --color-paper: #f6f4ee;
 
-  --font-display: 'Nunito', ui-rounded, system-ui, sans-serif;
+  /* 暖灰阶：全局替换 Tailwind 默认冷灰，统一米色调 */
+  --color-gray-50: #faf8f4;
+  --color-gray-100: #f1eee6;
+  --color-gray-200: #e6e1d5;
+  --color-gray-300: #d4cec0;
+  --color-gray-400: #a9a496;
+  --color-gray-500: #8a8678;
+  --color-gray-600: #66645a;
+  --color-gray-700: #52504a;
+  --color-gray-800: #3b3a35;
+  --color-gray-900: #2a2925;
+  --color-gray-950: #1c1b18;
 
-  --shadow-btn: 0 4px 0 0 rgb(0 0 0 / 0.18);
-  --shadow-card: 0 2px 0 0 rgb(0 0 0 / 0.08);
+  /* 字体：正文人文无衬线 + 标题衬线 */
+  --font-sans: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-display: 'Source Serif 4', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+
+  /* 阴影：柔和弥散，告别硬边 3D */
+  --shadow-btn: 0 1px 2px rgb(35 40 46 / 0.12);
+  --shadow-card: 0 1px 2px rgb(35 40 46 / 0.04), 0 8px 24px -10px rgb(35 40 46 / 0.1);
+  --shadow-lift: 0 2px 6px rgb(35 40 46 / 0.06), 0 20px 48px -16px rgb(35 40 46 / 0.18);
 }
 
 html {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: #ffffff;
+  background-color: #f7f5f0;
   color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* 3D 按压按钮的通用行为（颜色由组件类给定） */
+/* 标题统一衬线，营造书卷气 */
+h1,
+h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* 选区与焦点：主色低饱和呈现 */
+::selection {
+  background: color-mix(in srgb, var(--color-duo) 18%, transparent);
+}
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-duo) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 @layer components {
+  /* 学术风按钮：柔和阴影 + 轻微浮起（类名沿用，避免改动页面） */
   .btn-3d {
-    @apply select-none rounded-2xl font-extrabold tracking-wide uppercase transition-none;
+    @apply select-none rounded-xl font-semibold tracking-normal transition-all duration-200 ease-out;
     box-shadow: var(--shadow-btn);
-    transform: translateY(0);
+  }
+  .btn-3d:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
   }
   .btn-3d:active {
-    box-shadow: 0 0 0 0 rgb(0 0 0 / 0.18);
-    transform: translateY(4px);
+    transform: translateY(0);
+    box-shadow: none;
   }
 
   .card-flat {
-    @apply rounded-2xl border-2 border-gray-200 bg-white;
+    @apply rounded-xl border border-gray-200 bg-white;
+    box-shadow: var(--shadow-card);
   }
 }
 
-/* 卡片翻转容器 */
+/* 卡片翻转容器（复习页沿用） */
 .perspective-1000 {
   perspective: 1000px;
 }
@@ -84,14 +130,67 @@ body {
   animation-delay: 0.3s;
 }
 
-/* 滚动条美化 */
+/* 弹窗进出动画（Radix 挂载/卸载时自动播放） */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -47%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes dialog-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.97);
+  }
+}
+.dialog-overlay {
+  animation: overlay-in 0.2s ease-out both;
+}
+.dialog-overlay[data-state='closed'] {
+  animation: overlay-out 0.16s ease-in both;
+}
+.dialog-content {
+  animation: dialog-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.dialog-content[data-state='closed'] {
+  animation: dialog-out 0.16s ease-in both;
+}
+
+/* 滚动条美化（暖色） */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d7d7d7;
+  background: #d4cec0;
   border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bdb6a4;
 }
 
 /* 隐藏滚动条（用于横向 chip 滚动条） */
