@@ -10,7 +10,7 @@ import {
   ensureDefaultBook,
   type BookWithCount,
 } from '../services/books'
-import { describeNextReview } from '../services/review'
+import { describeNextReview } from '../services/study'
 import { useT, LANGUAGES } from '../i18n'
 import type { Word } from '../types'
 import { Input } from '../components/ui/input'

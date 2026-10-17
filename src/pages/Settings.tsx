@@ -10,12 +10,15 @@ import {
   Download,
   Upload,
   Lightbulb,
+  GraduationCap,
+  FileCode2,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useSettings } from '../stores/settings'
 import { useAuth } from '../stores/auth'
 import { useT, LANGUAGES } from '../i18n'
 import { exportData, downloadBackup, importData, isValidBackup } from '../services/backup'
+import { exportWordsHtml } from '../services/exportHtml'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Card, CardTitle } from '../components/ui/card'
@@ -29,12 +32,14 @@ export default function Settings() {
     language,
     interests,
     tavilyKey,
+    dailyNewWords,
     setApiKey,
     setBaseUrl,
     setModel,
     setLanguage,
     setInterests,
     setTavilyKey,
+    setDailyNewWords,
   } = useSettings()
   const signOut = useAuth((s) => s.signOut)
   const email = useAuth((s) => s.session?.user?.email)
@@ -60,6 +65,19 @@ export default function Settings() {
     try {
       const data = await exportData()
       downloadBackup(data)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Export failed.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  /** 导出全部单词为美观的 HTML 页面 */
+  const handleExportHtml = async () => {
+    setBusy(true)
+    setError(null)
+    try {
+      await exportWordsHtml()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Export failed.')
     } finally {
@@ -216,6 +234,29 @@ export default function Settings() {
         </p>
       </Card>
 
+      {/* 背单词：每轮新词数 */}
+      <Card className="flex flex-col gap-3">
+        <CardTitle className="flex items-center gap-2">
+          <GraduationCap size={18} className="text-duo" /> {t('settings.study')}
+        </CardTitle>
+        <p className="text-sm font-semibold text-ink-soft">{t('settings.newWordsDesc')}</p>
+        <div className="flex gap-2">
+          {[5, 10, 15, 20].map((n) => (
+            <button
+              key={n}
+              onClick={() => setDailyNewWords(n)}
+              className={`cursor-pointer rounded-2xl border-2 px-5 py-2.5 text-base font-extrabold transition-colors ${
+                dailyNewWords === n
+                  ? 'border-duo bg-duo/10 text-duo'
+                  : 'border-gray-200 bg-white text-ink-soft hover:border-gray-300'
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      </Card>
+
       {/* 数据导入 / 导出 */}
       <Card className="flex flex-col gap-3">
         <CardTitle className="flex items-center gap-2">
@@ -223,9 +264,12 @@ export default function Settings() {
         </CardTitle>
         <p className="text-sm font-semibold text-ink-soft">{t('settings.dataDesc')}</p>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={handleExport} disabled={busy}>
             <Download size={16} /> {t('settings.export')}
+          </Button>
+          <Button variant="outline" onClick={handleExportHtml} disabled={busy}>
+            <FileCode2 size={16} /> {t('settings.exportHtml')}
           </Button>
           <Button variant="outline" onClick={() => fileRef.current?.click()} disabled={busy}>
             <Upload size={16} /> {t('settings.import')}

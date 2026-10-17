@@ -25,6 +25,8 @@ interface SettingsState {
   useSearch: boolean
   /** 检索时效 */
   freshness: Freshness
+  /** 背单词：每轮新学几个词 */
+  dailyNewWords: number
   setApiKey: (v: string) => void
   setBaseUrl: (v: string) => void
   setModel: (v: string) => void
@@ -33,6 +35,7 @@ interface SettingsState {
   setTavilyKey: (v: string) => void
   setUseSearch: (v: boolean) => void
   setFreshness: (v: Freshness) => void
+  setDailyNewWords: (v: number) => void
 }
 
 export const useSettings = create<SettingsState>()(
@@ -46,6 +49,7 @@ export const useSettings = create<SettingsState>()(
       tavilyKey: '',
       useSearch: true,
       freshness: 'month',
+      dailyNewWords: 10,
       setApiKey: (apiKey) => set({ apiKey }),
       setBaseUrl: (baseUrl) => set({ baseUrl }),
       setModel: (model) => set({ model }),
@@ -54,6 +58,7 @@ export const useSettings = create<SettingsState>()(
       setTavilyKey: (tavilyKey) => set({ tavilyKey }),
       setUseSearch: (useSearch) => set({ useSearch }),
       setFreshness: (freshness) => set({ freshness }),
+      setDailyNewWords: (dailyNewWords) => set({ dailyNewWords }),
     }),
     { name: 'wl-settings' },
   ),

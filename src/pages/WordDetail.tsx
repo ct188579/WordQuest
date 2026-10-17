@@ -18,7 +18,7 @@ import dayjs from 'dayjs'
 import { fetchReviewLogs, fetchWord, fetchWords, updateWord, deleteWord } from '../services/words'
 import { fetchBook } from '../services/books'
 import { addFavorite } from '../services/favorites'
-import { describeNextReview } from '../services/review'
+import { describeNextReview } from '../services/study'
 import {
   generateExamples,
   analyzeRoots,

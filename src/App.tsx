@@ -10,7 +10,7 @@ import Words from './pages/Words'
 import WordDetail from './pages/WordDetail'
 import AddWord from './pages/AddWord'
 import Read from './pages/Read'
-import Review from './pages/Review'
+import Study from './pages/Study'
 import Favorites from './pages/Favorites'
 import Songs from './pages/Songs'
 import SongPlayer from './pages/SongPlayer'
@@ -60,7 +60,7 @@ export default function App() {
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/songs" element={<Songs />} />
             <Route path="/songs/:id" element={<SongPlayer />} />
-            <Route path="/review" element={<Review />} />
+            <Route path="/study" element={<Study />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         ) : (
